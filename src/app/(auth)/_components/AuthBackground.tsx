@@ -1,6 +1,6 @@
 import { File } from 'lucide-react'
 
-export const DocumentBackground = () => {
+const AuthBackground = () => {
     return (
         <div className="fixed inset-0 z-0 opacity-5">
             <div className="absolute inset-0 grid grid-cols-6 gap-4 p-4">
@@ -11,4 +11,6 @@ export const DocumentBackground = () => {
         </div>
     )
 }
+
+export default AuthBackground
 

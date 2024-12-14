@@ -1,13 +1,13 @@
 "use client"
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Loader2 } from 'lucide-react'
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import {useState} from "react"
+import {motion} from "framer-motion"
+import {Loader2} from 'lucide-react'
+import {useForm} from "react-hook-form"
+import {zodResolver} from "@hookform/resolvers/zod"
 import * as z from "zod"
 import {formSchema} from "@/lib/definitions"
-import { Button } from "@/components/ui/button"
+import {Button} from "@/components/ui/button"
 import {
     Form,
     FormControl,
@@ -16,10 +16,13 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { toast } from "@/hooks/use-toast"
-import { DocumentBackground } from "@/components/DocumentBackground"
+import {Input} from "@/components/ui/input"
+import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group"
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import AuthBackground from "@/app/(auth)/_components/AuthBackground"
+import {handleSignup} from "@/app/(auth)/signup/actions";
 
 const Signup = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -39,65 +42,67 @@ const Signup = () => {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsLoading(true)
 
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 2000))
+        try {
+            await handleSignup(values)
+        } catch (e) {
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
 
-        console.log(values)
-        toast({
-            title: "Account created successfully",
-            description: "Please check your email to verify your account.",
-        })
-        setIsLoading(false)
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-white via-sky-100 to-cyan-100 relative overflow-hidden">
-            <DocumentBackground />
+        <div
+            className="min-h-screen flex items-center justify-center bg-gradient-to-r from-white via-sky-100 to-cyan-100 relative overflow-hidden">
+            <AuthBackground/>
+
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                initial={{opacity: 0, y: 20}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.5}}
                 className="bg-white/80 backdrop-blur-sm p-8 rounded-lg shadow-lg w-full max-w-md z-10"
             >
+                <ToastContainer/>
                 <h2 className="text-2xl font-bold mb-6 text-center text-[#0e708b]">Create an Account</h2>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <FormField
                             control={form.control}
                             name="username"
-                            render={({ field }) => (
+                            render={({field}) => (
                                 <FormItem>
                                     <FormLabel>Username</FormLabel>
                                     <FormControl>
                                         <Input placeholder="johndoe" {...field} />
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage/>
                                 </FormItem>
                             )}
                         />
                         <FormField
                             control={form.control}
                             name="email"
-                            render={({ field }) => (
+                            render={({field}) => (
                                 <FormItem>
                                     <FormLabel>Email</FormLabel>
                                     <FormControl>
                                         <Input type="email" placeholder="john@example.com" {...field} />
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage/>
                                 </FormItem>
                             )}
                         />
                         <FormField
                             control={form.control}
                             name="password"
-                            render={({ field }) => (
+                            render={({field}) => (
                                 <FormItem>
                                     <FormLabel>Password</FormLabel>
                                     <FormControl>
                                         <Input type="password" placeholder="********" {...field} />
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage/>
                                 </FormItem>
                             )}
                         />
@@ -105,26 +110,26 @@ const Signup = () => {
                             <FormField
                                 control={form.control}
                                 name="firstName"
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <FormItem className="flex-1">
                                         <FormLabel>First Name</FormLabel>
                                         <FormControl>
                                             <Input placeholder="John" {...field} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage/>
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="lastName"
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <FormItem className="flex-1">
                                         <FormLabel>Last Name</FormLabel>
                                         <FormControl>
                                             <Input placeholder="Doe" {...field} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage/>
                                     </FormItem>
                                 )}
                             />
@@ -132,7 +137,7 @@ const Signup = () => {
                         <FormField
                             control={form.control}
                             name="role"
-                            render={({ field }) => (
+                            render={({field}) => (
                                 <FormItem className="space-y-3">
                                     <FormLabel>Account Type</FormLabel>
                                     <FormControl>
@@ -143,7 +148,7 @@ const Signup = () => {
                                         >
                                             <FormItem className="flex items-center space-x-2 space-y-0">
                                                 <FormControl>
-                                                    <RadioGroupItem value="employee" />
+                                                    <RadioGroupItem value="employee"/>
                                                 </FormControl>
                                                 <FormLabel className="font-normal">
                                                     Employee
@@ -151,7 +156,7 @@ const Signup = () => {
                                             </FormItem>
                                             <FormItem className="flex items-center space-x-2 space-y-0">
                                                 <FormControl>
-                                                    <RadioGroupItem value="manager" />
+                                                    <RadioGroupItem value="manager"/>
                                                 </FormControl>
                                                 <FormLabel className="font-normal">
                                                     Manager
@@ -159,7 +164,7 @@ const Signup = () => {
                                             </FormItem>
                                         </RadioGroup>
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage/>
                                 </FormItem>
                             )}
                         />
@@ -170,7 +175,7 @@ const Signup = () => {
                         >
                             {isLoading ? (
                                 <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
                                     Please wait
                                 </>
                             ) : (
