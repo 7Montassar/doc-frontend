@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 "use client"
 
 import { useState } from "react"
@@ -7,19 +6,7 @@ import { Loader2, UserCircle, Briefcase, FileText, Mail, Lock, User } from 'luci
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { formSchema } from "@/lib/definitions"
-import { Button } from "@/app/(employee)/_components/ui/button"
-=======
-"use client";
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Loader2, UserCircle, Briefcase, FileText, Mail, Lock, User } from 'lucide-react';
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { formSchema } from "@/lib/definitions";
-import { Button } from "@/components/ui/button";
->>>>>>> 8fcdc8c87df62b887c18660f397d03ba3ef8161a
+
 import {
     Form,
     FormControl,
@@ -27,17 +14,9 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-<<<<<<< HEAD
-} from "@/app/(employee)/_components/ui/form"
-import { Input } from "@/app/(employee)/_components/ui/input"
-import { RadioGroup, RadioGroupItem } from "@/app/(employee)/_components/ui/radio-group"
-import {toast, ToastContainer} from 'react-toastify'
+
+} from "@/components/ui/form"
 import 'react-toastify/dist/ReactToastify.css'
-import AuthBackground from "@/app/(auth)/_components/AuthBackground"
-import { handleSignup } from "@/app/(auth)/signup/actions"
-import Link from "next/link"
-=======
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {toast, ToastContainer} from 'react-toastify';
@@ -45,7 +24,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import AuthBackground from "@/app/(auth)/_components/AuthBackground";
 import { handleSignup } from "@/app/(auth)/signup/actions";
 import Link from "next/link";
->>>>>>> 8fcdc8c87df62b887c18660f397d03ba3ef8161a
+import {formSchema} from "@/lib/definitions";
+import { Button } from "@/components/ui/button"
+import {redirect} from "next/navigation";
 
 const Signup = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -78,6 +59,9 @@ const Signup = () => {
         } catch (e) {
             const errorMessage = e instanceof Error ? e.message : "An unknown error occurred.";
             toast.error(errorMessage);
+            setTimeout(() => {
+                redirect("/dashboard")
+            }, 2000);
         } finally {
             setIsLoading(false);
         }

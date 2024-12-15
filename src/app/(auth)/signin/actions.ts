@@ -2,7 +2,7 @@
 import { z } from "zod";
 import { XMLParser } from "fast-xml-parser";
 import {loginFormSchema} from "@/lib/definitions";
-import {setSession} from "@/lib/auth.js";
+import {setSession} from "@/lib/auth";
 
 
 export const handleLogin = async (values: z.infer<typeof loginFormSchema>) => {

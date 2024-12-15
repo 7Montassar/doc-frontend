@@ -7,10 +7,11 @@ export async function setSession(token: string) {
     });
 }
 
-export async function getSession(token: string) {
+export async function getSession() {
+
     const session = (await cookies()).get('session')?.value;
     if (!session) {
-        return null;
+        throw new Error('Could not find session');
     }
     return session;
 }

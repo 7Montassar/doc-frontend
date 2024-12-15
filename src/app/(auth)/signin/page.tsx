@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginFormSchema} from "@/lib/definitions"
 import * as z from "zod"
-import { Button } from "@/app/(employee)/_components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
     Form,
     FormControl,
@@ -15,17 +15,16 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/app/(employee)/_components/ui/form"
-import { Input } from "@/app/(employee)/_components/ui/input"
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-import AuthBackground from "@/app/(auth)/_components/AuthBackground"
 import { handleLogin } from "@/app/(auth)/signin/actions"
 import Link from "next/link"
 import AuthBackgroundDarkTheme from "@/app/(auth)/_components/AuthBackgroundDarkTheme";
-import {setSession} from "@/lib/auth.js";
-
+import AuthBackground from "@/app/(auth)/_components/AuthBackground"
+import {redirect} from "next/navigation";
 
 
 const Login = () => {
@@ -45,6 +44,10 @@ const Login = () => {
         try {
             await handleLogin(values);
             toast.success("Logged in successfully!");
+            setTimeout(() => {
+                redirect("/dashboard")
+            }, 2000);
+
         } catch (e) {
             const errorMessage = e instanceof Error ? e.message : "An unknown error occurred.";
             toast.error(errorMessage);
