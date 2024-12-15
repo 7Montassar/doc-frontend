@@ -1,6 +1,4 @@
 import * as z from "zod";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
 
 export const formSchema = z.object({
     username: z.string().min(3, {
@@ -18,6 +16,9 @@ export const formSchema = z.object({
     }),
     lastName: z.string().min(1, {
         message: "Last name is required",
+    }),
+    managerType: z.string().min(1, {
+        message: "Manager type is required",
     }),
 })
 

@@ -5,6 +5,7 @@ import {XMLParser} from "fast-xml-parser";
 
 export const handleSignup = async (values: z.infer<typeof formSchema>) => {
     try {
+        const isManager = values.role === "manager";
         const soapEnvelope = `
             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:proj="project.user" xmlns:user="user.complexTypes">
                 <soapenv:Header/>
@@ -17,6 +18,11 @@ export const handleSignup = async (values: z.infer<typeof formSchema>) => {
                             <user:role>${values.role}</user:role>
                             <user:first_name>${values.firstName}</user:first_name>
                             <user:last_name>${values.lastName}</user:last_name>
+                            ${
+            isManager
+                ? `<user:manager_type>${values.managerType?.toLowerCase() || ""}</user:manager_type>`
+                : ""
+        }
                         </proj:complex_user>
                     </proj:register_user>
                 </soapenv:Body>
