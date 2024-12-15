@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "use client"
 
 import { useState } from "react"
@@ -8,6 +9,17 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { formSchema } from "@/lib/definitions"
 import { Button } from "@/app/(employee)/_components/ui/button"
+=======
+"use client";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Loader2, UserCircle, Briefcase, FileText, Mail, Lock, User } from 'lucide-react';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { formSchema } from "@/lib/definitions";
+import { Button } from "@/components/ui/button";
+>>>>>>> 8fcdc8c87df62b887c18660f397d03ba3ef8161a
 import {
     Form,
     FormControl,
@@ -15,6 +27,7 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
+<<<<<<< HEAD
 } from "@/app/(employee)/_components/ui/form"
 import { Input } from "@/app/(employee)/_components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/app/(employee)/_components/ui/radio-group"
@@ -23,9 +36,20 @@ import 'react-toastify/dist/ReactToastify.css'
 import AuthBackground from "@/app/(auth)/_components/AuthBackground"
 import { handleSignup } from "@/app/(auth)/signup/actions"
 import Link from "next/link"
+=======
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import AuthBackground from "@/app/(auth)/_components/AuthBackground";
+import { handleSignup } from "@/app/(auth)/signup/actions";
+import Link from "next/link";
+>>>>>>> 8fcdc8c87df62b887c18660f397d03ba3ef8161a
 
 const Signup = () => {
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
+    const [role, setRole] = useState("employee");
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -36,21 +60,26 @@ const Signup = () => {
             role: "employee",
             firstName: "",
             lastName: "",
+            managerType: "",
         },
-    })
+    });
+
+    // Handle role change
+    const handleRoleChange = (value: string) => {
+        setRole(value);
+    };
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         if (isLoading) return;
-        setIsLoading(true)
+        setIsLoading(true);
         try {
-            const token = await handleSignup(values)
-            localStorage.setItem("authToken", token);
+            await handleSignup(values);
             toast.success("Account Created successfully!");
         } catch (e) {
             const errorMessage = e instanceof Error ? e.message : "An unknown error occurred.";
             toast.error(errorMessage);
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }
 
@@ -160,7 +189,10 @@ const Signup = () => {
                                     <FormLabel className="text-gray-700">Account Type</FormLabel>
                                     <FormControl>
                                         <RadioGroup
-                                            onValueChange={field.onChange}
+                                            onValueChange={(value) => {
+                                                field.onChange(value);
+                                                handleRoleChange(value);
+                                            }}
                                             defaultValue={field.value}
                                             className="flex space-x-4"
                                         >
@@ -188,6 +220,24 @@ const Signup = () => {
                                 </FormItem>
                             )}
                         />
+                        {role === "manager" && (
+                            <FormField
+                                control={form.control}
+                                name="managerType"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="flex items-center text-gray-700">
+                                            <Briefcase className="w-4 h-4 mr-2" />
+                                            Manager Type
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="HR, Finance, etc." {...field} className="bg-gray-50 border-gray-300 focus:border-[#0e708b] focus:ring-[#0e708b]" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
                         <Button
                             type="submit"
                             className="w-full bg-[#0e708b] hover:bg-[#0c5f75] transition-colors duration-300"
@@ -211,8 +261,7 @@ const Signup = () => {
                 </Form>
             </motion.div>
         </div>
-    )
-}
+    );
+};
 
-export default Signup
-
+export default Signup;
