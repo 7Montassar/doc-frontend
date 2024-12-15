@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { ToastContainer } from 'react-toastify'
+import {toast, ToastContainer} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import AuthBackground from "@/app/(auth)/_components/AuthBackground"
 import { handleSignup } from "@/app/(auth)/signup/actions"
@@ -40,11 +40,15 @@ const Signup = () => {
     })
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+        if (isLoading) return;
         setIsLoading(true)
         try {
-            await handleSignup(values)
+            const token = await handleSignup(values)
+            localStorage.setItem("authToken", token);
+            toast.success("Account Created successfully!");
         } catch (e) {
-            console.error(e)
+            const errorMessage = e instanceof Error ? e.message : "An unknown error occurred.";
+            toast.error(errorMessage);
         } finally {
             setIsLoading(false)
         }

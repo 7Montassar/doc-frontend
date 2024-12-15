@@ -1,7 +1,7 @@
 "use server"
 import { z } from "zod";
 import { formSchema } from "@/lib/definitions";
-import { toast } from "react-toastify";
+import {XMLParser} from "fast-xml-parser";
 
 export const handleSignup = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -34,35 +34,22 @@ export const handleSignup = async (values: z.infer<typeof formSchema>) => {
 
         const responseText = await resp.text();
 
-        // Parse XML response
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(responseText, "text/xml");
+        const parser = new XMLParser({ ignoreAttributes: false });
+        const parsedXML = parser.parse(responseText);
 
         if (!resp.ok) {
-            // Handle SOAP Fault if status is not OK
-            const faultString = xmlDoc.getElementsByTagName("faultstring")[0]?.textContent;
-            throw new Error(faultString || "An unknown error occurred.");
+            const faultString = parsedXML["soap11env:Envelope"]?.["soap11env:Body"]?.["soap11env:Fault"]?.["faultstring"] || "An unknown error occurred.";
+            throw new Error(faultString);
         }
 
         // Handle success response
-        const resultTag = xmlDoc.getElementsByTagName("tns:register_userResult")[0];
-        const token = resultTag?.textContent;
-
-        if (token) {
-            // Successfully logged in, store token in localStorage or context
-            localStorage.setItem("authToken", token);
-            toast.success("Account Created successfully!");
-            } else {
-            throw new Error("Token not found in response.");
-        }
+        const result = parsedXML["soap11env:Envelope"]?.["soap11env:Body"]?.["tns:register_userResponse"]?.["tns:register_userResult"];
+        if (!result) throw new Error("Token not found in response.");
 
 
-        return responseText;
+        return result;
     } catch (e) {
         const errorMessage = e instanceof Error ? e.message : "An unknown error occurred.";
-        toast.error(errorMessage);
-
-        console.error(e);
-        throw e;
+        throw new Error(errorMessage);
     }
 };

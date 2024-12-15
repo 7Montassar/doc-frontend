@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import { Loader2, FileText, UserCircle, Lock } from 'lucide-react'
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { loginFormSchema} from "@/lib/definitions"
 import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import {
@@ -22,14 +23,9 @@ import 'react-toastify/dist/ReactToastify.css'
 import AuthBackground from "@/app/(auth)/_components/AuthBackground"
 import { handleLogin } from "@/app/(auth)/signin/actions"
 import Link from "next/link"
-import Image from "next/image";
 import AuthBackgroundDarkTheme from "@/app/(auth)/_components/AuthBackgroundDarkTheme";
 
-// Define the login form schema
-const loginFormSchema = z.object({
-    username: z.string().min(1, "Username is required"),
-    password: z.string().min(1, "Password is required"),
-})
+
 
 const Login = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -43,17 +39,20 @@ const Login = () => {
     })
 
     async function onSubmit(values: z.infer<typeof loginFormSchema>) {
-        setIsLoading(true)
+        setIsLoading(true);
 
         try {
-            await handleLogin(values)
-        } catch (error) {
-            console.error(error)
-            toast.error("An error occurred during login")
+            const token = await handleLogin(values);
+            localStorage.setItem("authToken", token);
+            toast.success("Logged in successfully!");
+        } catch (e) {
+            const errorMessage = e instanceof Error ? e.message : "An unknown error occurred.";
+            toast.error(errorMessage);
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }
+
 
     return (
         <div

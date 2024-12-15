@@ -1,11 +1,8 @@
-"use server"
+"use server";
 import { z } from "zod";
-import { toast } from "react-toastify";
+import { XMLParser } from "fast-xml-parser";
+import {loginFormSchema} from "@/lib/definitions";
 
-const loginFormSchema = z.object({
-    username: z.string().min(1, "Username is required"),
-    password: z.string().min(1, "Password is required"),
-});
 
 export const handleLogin = async (values: z.infer<typeof loginFormSchema>) => {
     try {
@@ -31,35 +28,20 @@ export const handleLogin = async (values: z.infer<typeof loginFormSchema>) => {
         });
 
         const responseText = await resp.text();
-
-        // Parse XML response
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(responseText, "text/xml");
+        const parser = new XMLParser({ ignoreAttributes: false });
+        const parsedXML = parser.parse(responseText);
 
         if (!resp.ok) {
-            // Handle SOAP Fault if status is not OK
-            const faultString = xmlDoc.getElementsByTagName("faultstring")[0]?.textContent;
-            throw new Error(faultString || "An unknown error occurred.");
+            const faultString = parsedXML["soap11env:Envelope"]?.["soap11env:Body"]?.["soap11env:Fault"]?.["faultstring"] || "An unknown error occurred.";
+            throw new Error(faultString);
         }
 
-        // Extract token from the SOAP response
-        const resultTag = xmlDoc.getElementsByTagName("tns:login_userResult")[0];
-        const token = resultTag?.textContent;
+        const result = parsedXML["soap11env:Envelope"]?.["soap11env:Body"]?.["tns:login_userResponse"]?.["tns:login_userResult"];
+        if (!result) throw new Error("Token not found in response.");
 
-        if (token) {
-            // Successfully logged in, store token in localStorage or context
-            localStorage.setItem("authToken", token);
-            toast.success("Logged in successfully!");
-        } else {
-            throw new Error("Token not found in response.");
-        }
-
-        return token;
+        return result;
     } catch (e) {
         const errorMessage = e instanceof Error ? e.message : "An unknown error occurred.";
-        toast.error(errorMessage);
-
-        console.error(e);
-        throw e;
+        throw new Error(errorMessage);
     }
 };
