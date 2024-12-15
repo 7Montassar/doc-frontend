@@ -55,6 +55,7 @@ export default function DocumentTable() {
               <th className="py-2 px-4 border-b text-left">Filename</th>
               <th className="py-2 px-4 border-b text-left">Category</th>
               <th className="py-2 px-4 border-b text-left">Created At</th>
+              <th className="py-2 px-4 border-b text-left">Summary</th>
               <th className="py-2 px-4 border-b text-left">Status</th>
               <th className="py-2 px-4 border-b text-left">Action</th>
             </tr>
@@ -72,6 +73,7 @@ export default function DocumentTable() {
                 <td className="py-2 px-4 border-b">
                   {new Date(doc.createdAt).toLocaleDateString()}
                 </td>
+                <td className="py-2 px-4 border-b">{doc.summary}</td>
                 <td className="py-2 px-4 border-b">
                   {doc.status === 'migrated' ? 'Migrated' : 'Pending'}
                 </td>
