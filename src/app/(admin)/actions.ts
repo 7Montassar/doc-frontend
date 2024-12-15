@@ -20,7 +20,8 @@ export const getAllUsers = async () => {
                 ...headers,
             },
             body: soapEnvelope,
-        });
+            cache: "force-cache",
+        },  );
 
         const responseText = await response.text();
         console.log("responseText", responseText);

@@ -33,7 +33,7 @@ export const Dashboard = () => {
             }
         };
 
-        fetchUsers(); // Call the function to fetch users
+        fetchUsers().then(r => console.log(r));
     }, []); // Empty dependency array to only run once when component mounts
 
     return (
@@ -62,7 +62,6 @@ export const Dashboard = () => {
                                 )}
                                 {activeSection === 'documents' && (
                                     <section>
-                                        <h2 className="text-2xl font-semibold mb-6 text-[#0E708B]">Documents</h2>
                                         <DocumentTable />
                                     </section>
                                 )}
