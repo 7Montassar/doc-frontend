@@ -3,7 +3,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { FileText, Brain, Zap, Lock, BarChart, Users } from 'lucide-react'
-import MagnificentBackground from '@/components/MagnificentBackground'
+import MagnificentBackground from '@/components/MagnificientBackground'
 import Link from 'next/link'
 
 const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; description: string }> = ({ icon, title, description }) => (
