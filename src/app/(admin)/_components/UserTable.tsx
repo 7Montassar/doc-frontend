@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
 import { Button } from "./ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
-import { Badge } from "./ui/badge"
+import { Badge } from "@/components/ui/badge"
 import { MoreHorizontal, Pencil, Trash2, UserPlus, Check } from 'lucide-react'
 import { User } from "@/types/user"
 import {
