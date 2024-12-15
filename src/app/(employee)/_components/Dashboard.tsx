@@ -2,7 +2,7 @@
 import  AvailableActions  from '../_components/AvailableActions'
 import  OldDocumentsTable  from '../_components/OldDocumentsTable'
 import UploadOldDoc from '../_components/UploadOldDoc'
-export function Dashboard() {
+export const Dashboard= () => {
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-8 text-[#0E708B]">Document Management</h1>
