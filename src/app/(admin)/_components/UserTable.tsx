@@ -1,8 +1,12 @@
+'use client'
+
+import { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
 import { Button } from "./ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
-import { Badge } from "./badge"
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
+import { Badge } from "./ui/badge"
+import { MoreHorizontal, Pencil, Trash2, UserPlus, Check } from 'lucide-react'
+import { User } from "@/types/user";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,80 +15,133 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
-const users = [
-  { id: 1, name: "John Doe", email: "john@example.com", role: "Admin", status: "Active" },
-  { id: 2, name: "Jane Smith", email: "jane@example.com", role: "User", status: "Inactive" },
-  { id: 3, name: "Mike Johnson", email: "mike@example.com", role: "User", status: "Active" },
-  { id: 4, name: "Sarah Williams", email: "sarah@example.com", role: "Manager", status: "Active" },
+
+const users: User[] = [
+  { id: 1, username: "john_doe", email: "john@example.com", role: "admin", first_name: "John", last_name: "Doe", is_active: true },
+  { id: 2, username: "jane_smith", email: "jane@example.com", role: "manager", manager_type: "Human Resources", first_name: "Jane", last_name: "Smith", is_active: false },
+  { id: 3, username: "mike_johnson", email: "mike@example.com", role: "employee", first_name: "Mike", last_name: "Johnson", is_active: true },
+  { id: 4, username: "sarah_williams", email: "sarah@example.com", role: "manager", manager_type: "Finance", first_name: "Sarah", last_name: "Williams", is_active: true },
 ]
 
 export default function UserTable() {
+  const [selectedRole, setSelectedRole] = useState<string | null>(null)
+
+  const filteredUsers = selectedRole ? users.filter(user => user.role === selectedRole) : users
+
+  const handleAddUser = (role: string) => {
+    console.log(`Add new ${role}`)
+    // Implement the logic to add a new user with the specified role
+  }
+
+  const handleActivateAccount = (userId: number) => {
+    console.log(`Activate account for user ${userId}`)
+  }
+
   return (
-    <div className="overflow-x-auto">
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">User</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Role</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {users.map((user) => (
-          <TableRow key={user.id}>
-            <TableCell className="font-medium">
-              <div className="flex items-center space-x-3">
-                <Avatar>
-                  <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${user.name}`} />
-                  <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <div className="font-bold">{user.name}</div>
-                  <div className="text-sm text-muted-foreground">User ID: {user.id}</div>
-                </div>
-              </div>
-            </TableCell>
-            <TableCell>{user.email}</TableCell>
-            <TableCell>
-              <Badge variant={user.role === 'Admin' ? 'default' : 'secondary'}>
-                {user.role}
-              </Badge>
-            </TableCell>
-            <TableCell>
-              <Badge variant={user.status === 'Active' ? 'success' : 'destructive'}>
-                {user.status}
-              </Badge>
-            </TableCell>
-            <TableCell className="text-right">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Open menu</span>
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem>
-                    <Pencil className="mr-2 h-4 w-4" />
-                    Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-red-600">
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-    </div>
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <Select onValueChange={(value) => setSelectedRole(value === 'all' ? null : value)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter by role" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="admin">Admin</SelectItem>
+              <SelectItem value="manager">Manager</SelectItem>
+              <SelectItem value="employee">Employee</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className="space-x-2">
+            <Button onClick={() => handleAddUser('admin')} className="bg-[#0E708B] hover:bg-[#0c5f75]">
+              <UserPlus className="mr-2 h-4 w-4" />
+              Add Admin
+            </Button>
+            <Button onClick={() => handleAddUser('manager')} className="bg-[#0E708B] hover:bg-[#0c5f75]">
+              <UserPlus className="mr-2 h-4 w-4" />
+              Add Manager
+            </Button>
+            <Button onClick={() => handleAddUser('employee')} className="bg-[#0E708B] hover:bg-[#0c5f75]">
+              <UserPlus className="mr-2 h-4 w-4" />
+              Add Employee
+            </Button>
+          </div>
+        </div>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[250px]">User</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredUsers.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center space-x-3">
+                        <Avatar>
+                          <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${user.first_name} ${user.last_name}`} />
+                          <AvatarFallback>{user.first_name[0]}{user.last_name[0]}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="font-bold">{user.first_name} {user.last_name}</div>
+                          <div className="text-sm text-muted-foreground">@{user.username}</div>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
+                        {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                      </Badge>
+                      {user.role === 'manager' && (
+                          <div className="text-sm text-muted-foreground mt-1">{user.manager_type}</div>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={user.is_active ? 'default' : 'destructive'}>
+                        {user.is_active ? 'Active' : 'Inactive'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuItem>
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Edit
+                          </DropdownMenuItem>
+                          {user.role === 'manager' && !user.is_active && (
+                              <DropdownMenuItem onSelect={() => handleActivateAccount(user.id)}>
+                                <Check className="mr-2 h-4 w-4" />
+                                Activate Account
+                              </DropdownMenuItem>
+                          )}
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="text-red-600">
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
   )
 }
 

@@ -8,7 +8,6 @@ import DocumentTable from '@/components/DocumentTable'
 import Stats from '@/app/(admin)/_components/Stats'
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 
-
 export const Dashboard = () => {
     const [activeSection, setActiveSection] = useState('stats')
 
@@ -18,37 +17,42 @@ export const Dashboard = () => {
 
     return (
         <SidebarProvider>
-            <div className="flex h-screen">
+            <div className="flex h-screen bg-gray-100">
                 <DashboardSidebar onSectionChange={handleSectionChange} activeSection={activeSection} />
-                <SidebarInset className="flex-1 overflow-auto">
-                    <div className="container w-full mx-auto px-4 py-8">
-                        <h1 className="text-3xl font-bold mb-8 text-[#0E708B]">{activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}</h1>
-                        {activeSection === 'stats' && <Stats />}
-                        {activeSection === 'users' && (
-                            <section className="mb-12 w-full">
-                                <UserTable />
-                            </section>
-                        )}
-                        {activeSection === 'documents' && (
-                            <section className="mb-12">
-                                <h2 className="text-2xl font-semibold mb-4 text-[#0E708B]">Documents</h2>
-                                <p>Documents section content goes here.</p>
-                                <section className="mb-12">
-                                    <DocumentTable />
-                                </section>
-                            </section>
-                        )}
-                        {activeSection === 'oldDocuments' && (
-                            <section className="mb-12 flex-1">
-                                <h2 className="text-2xl font-semibold mb-4 text-[#0E708B]">Old Documents</h2>
-                                <OldDocumentsTable />
-                            </section>
-                        )}
-
+                <SidebarInset className="flex-1 overflow-hidden">
+                    <div className="h-full overflow-auto">
+                        <div className="w-full p-8">
+                            <h1 className="text-4xl font-bold mb-6 text-[#0E708B]">
+                                {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
+                            </h1>
+                            <div>
+                                {activeSection === 'stats' && (
+                                    <section>
+                                        <Stats />
+                                    </section>
+                                )}
+                                {activeSection === 'users' && (
+                                    <section>
+                                        <UserTable />
+                                    </section>
+                                )}
+                                {activeSection === 'documents' && (
+                                    <section>
+                                        <h2 className="text-2xl font-semibold mb-6 text-[#0E708B]">Documents</h2>
+                                        <DocumentTable />
+                                    </section>
+                                )}
+                                {activeSection === 'oldDocuments' && (
+                                    <section>
+                                        <h2 className="text-2xl font-semibold mb-6 text-[#0E708B]">Old Documents</h2>
+                                        <OldDocumentsTable />
+                                    </section>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </SidebarInset>
             </div>
         </SidebarProvider>
     )
 }
-
