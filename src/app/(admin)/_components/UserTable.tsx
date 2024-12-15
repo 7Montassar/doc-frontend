@@ -1,12 +1,10 @@
-'use client'
-
 import { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
 import { Button } from "./ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Badge } from "./ui/badge"
 import { MoreHorizontal, Pencil, Trash2, UserPlus, Check } from 'lucide-react'
-import { User } from "@/types/user";
+import { User } from "@/types/user"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,15 +15,11 @@ import {
 } from "./ui/dropdown-menu"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
+interface UserTableProps {
+  users: User[]; // Accept users as a prop
+}
 
-const users: User[] = [
-  { id: 1, username: "john_doe", email: "john@example.com", role: "admin", first_name: "John", last_name: "Doe", is_active: true },
-  { id: 2, username: "jane_smith", email: "jane@example.com", role: "manager", manager_type: "Human Resources", first_name: "Jane", last_name: "Smith", is_active: false },
-  { id: 3, username: "mike_johnson", email: "mike@example.com", role: "employee", first_name: "Mike", last_name: "Johnson", is_active: true },
-  { id: 4, username: "sarah_williams", email: "sarah@example.com", role: "manager", manager_type: "Finance", first_name: "Sarah", last_name: "Williams", is_active: true },
-]
-
-export default function UserTable() {
+export default function UserTable({ users }: UserTableProps) {
   const [selectedRole, setSelectedRole] = useState<string | null>(null)
 
   const filteredUsers = selectedRole ? users.filter(user => user.role === selectedRole) : users
@@ -118,20 +112,18 @@ export default function UserTable() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuItem onClick={() => handleActivateAccount(user.id)}>
+                            <Check className="mr-2 h-4 w-4" />
+                            {user.is_active ? 'Deactivate' : 'Activate'} Account
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
                           <DropdownMenuItem>
                             <Pencil className="mr-2 h-4 w-4" />
-                            Edit
+                            Edit User
                           </DropdownMenuItem>
-                          {user.role === 'manager' && !user.is_active && (
-                              <DropdownMenuItem onSelect={() => handleActivateAccount(user.id)}>
-                                <Check className="mr-2 h-4 w-4" />
-                                Activate Account
-                              </DropdownMenuItem>
-                          )}
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-red-600">
+                          <DropdownMenuItem className="text-red-500">
                             <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
+                            Delete User
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -144,4 +136,3 @@ export default function UserTable() {
       </div>
   )
 }
-

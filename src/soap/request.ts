@@ -1,4 +1,4 @@
-import { XMLParser } from "fast-xml-parser";
+import {XMLParser} from "fast-xml-parser";
 
 export const soapReq = async (headers = {}, soapEnvelope = '') => {
     try {
@@ -22,9 +22,9 @@ export const soapReq = async (headers = {}, soapEnvelope = '') => {
             ignoreAttributes: false, // Preserve attributes if any
             parseTagValue: true,     // Parse tag values
         });
-        const parsedResponse = parser.parse(text);
 
-        return parsedResponse;
+        return parser.parse(text);
+
     } catch (error) {
         console.error("Error in SOAP request:", error);
         throw error;

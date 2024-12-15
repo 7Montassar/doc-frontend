@@ -9,3 +9,15 @@ export const getUserRoleEnvelope = (token: String) => {
             </soapenv:Body>
         </soapenv:Envelope>`;
 };
+
+
+export const getAllUserRoleEnvelope = () => {
+    return `
+       <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:proj="project.user">
+               <soapenv:Header/>
+              <soapenv:Body>
+                 <proj:get_all_users/>
+              </soapenv:Body>
+     </soapenv:Envelope>
+    `;
+};

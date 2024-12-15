@@ -1,19 +1,40 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { DashboardSidebar } from '@/app/(admin)/_components/Sidebar'
 import UserTable from '../_components/UserTable'
 import OldDocumentsTable from '@/components/OldDocumentsTable'
 import DocumentTable from '@/components/DocumentTable'
 import Stats from '@/app/(admin)/_components/Stats'
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { getAllUsers} from "@/app/(admin)/actions";
+import {User} from "@/types/user"; // Make sure this is the correct import path for getAllUsers
 
 export const Dashboard = () => {
     const [activeSection, setActiveSection] = useState('stats')
+    const [users, setUsers] = useState<User[]>([]); // Hold fetched users in state
+    const [loading, setLoading] = useState(true); // To track if users are still being fetched
+    const [error, setError] = useState<string | null>(null); // To handle errors
 
     const handleSectionChange = (section: string) => {
         setActiveSection(section)
     }
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const fetchedUsers = await getAllUsers();
+                console.log("fetchedUsers", fetchedUsers);
+                setUsers(fetchedUsers); // Update state with fetched users
+            } catch (err) {
+                setError('Failed to fetch users'); // Handle any errors
+            } finally {
+                setLoading(false); // Set loading to false once the fetch completes
+            }
+        };
+
+        fetchUsers(); // Call the function to fetch users
+    }, []); // Empty dependency array to only run once when component mounts
 
     return (
         <SidebarProvider>
@@ -33,7 +54,10 @@ export const Dashboard = () => {
                                 )}
                                 {activeSection === 'users' && (
                                     <section>
-                                        <UserTable />
+                                        {loading && <p>Loading users...</p>}
+                                        {error && <p className="text-red-500">{error}</p>}
+                                        {!loading && !error && users.length === 0 && <p>No users found.</p>}
+                                        {!loading && !error && users.length > 0 && <UserTable users={users} />} {/* Pass fetched users here */}
                                     </section>
                                 )}
                                 {activeSection === 'documents' && (
