@@ -1,3 +1,4 @@
+"use server"
 import { z } from "zod";
 import { formSchema } from "@/lib/definitions";
 import { toast } from "react-toastify";

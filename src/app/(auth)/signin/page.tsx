@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Loader2 } from 'lucide-react'
+import { Loader2, FileText, UserCircle, Lock } from 'lucide-react'
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -16,11 +16,14 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 import AuthBackground from "@/app/(auth)/_components/AuthBackground"
-import {handleLogin} from "@/app/(auth)/signin/actions";
+import { handleLogin } from "@/app/(auth)/signin/actions"
+import Link from "next/link"
+import Image from "next/image";
+import AuthBackgroundDarkTheme from "@/app/(auth)/_components/AuthBackgroundDarkTheme";
 
 // Define the login form schema
 const loginFormSchema = z.object({
@@ -53,27 +56,40 @@ const Login = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-white via-sky-100 to-cyan-100 relative overflow-hidden">
-            <AuthBackground />
+        <div
+            className="min-h-screen flex items-center justify-center bg-gradient-to-r from-white via-sky-100 to-cyan-100 relative overflow-hidden">
+            <AuthBackgroundDarkTheme/>
 
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="bg-white/80 backdrop-blur-sm p-8 rounded-lg shadow-lg w-full max-w-md z-10"
+                initial={{opacity: 0, y: 20}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.5}}
+                className="bg-white/90 backdrop-blur-md p-8 rounded-lg shadow-xl w-full max-w-md z-10"
             >
-                <ToastContainer />
-                <h2 className="text-2xl font-bold mb-6 text-center text-[#0e708b]">Login to Your Account</h2>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="username"
-                            render={({ field }) => (
+                <ToastContainer/>
+                <div className="flex items-center justify-center mb-6">
+
+
+                <FileText className="text-[#0e708b] w-12 h-12" />
+        </div>
+    <h2 className="text-3xl font-bold mb-6 text-center text-[#0e708b]">Login to Your Account</h2>
+    <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Username</FormLabel>
+                                    <FormLabel className="flex items-center text-gray-700">
+                                        <UserCircle className="w-4 h-4 mr-2" />
+                                        Username
+                                    </FormLabel>
                                     <FormControl>
-                                        <Input placeholder="johndoe" {...field} />
+                                        <Input
+                                            placeholder="johndoe"
+                                            {...field}
+                                            className="bg-gray-50 border-gray-300 focus:border-[#0e708b] focus:ring-[#0e708b]"
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -84,9 +100,17 @@ const Login = () => {
                             name="password"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Password</FormLabel>
+                                    <FormLabel className="flex items-center text-gray-700">
+                                        <Lock className="w-4 h-4 mr-2" />
+                                        Password
+                                    </FormLabel>
                                     <FormControl>
-                                        <Input type="password" placeholder="********" {...field} />
+                                        <Input
+                                            type="password"
+                                            placeholder="********"
+                                            {...field}
+                                            className="bg-gray-50 border-gray-300 focus:border-[#0e708b] focus:ring-[#0e708b]"
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -94,7 +118,7 @@ const Login = () => {
                         />
                         <Button
                             type="submit"
-                            className="w-full bg-[#0e708b] hover:bg-[#0c5f75]"
+                            className="w-full bg-[#0e708b] hover:bg-[#0c5f75] transition-colors duration-300"
                             disabled={isLoading}
                         >
                             {isLoading ? (
@@ -106,6 +130,11 @@ const Login = () => {
                                 "Log In"
                             )}
                         </Button>
+                        <div className="text-center mt-4">
+                            <Link href="/signup" className="text-sm text-[#0e708b] hover:underline">
+                                Don't have an account? Sign up
+                            </Link>
+                        </div>
                     </form>
                 </Form>
             </motion.div>

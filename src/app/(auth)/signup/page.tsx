@@ -1,13 +1,13 @@
 "use client"
 
-import {useState} from "react"
-import {motion} from "framer-motion"
-import {Loader2} from 'lucide-react'
-import {useForm} from "react-hook-form"
-import {zodResolver} from "@hookform/resolvers/zod"
+import { useState } from "react"
+import { motion } from "framer-motion"
+import { Loader2, UserCircle, Briefcase, FileText, Mail, Lock, User } from 'lucide-react'
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import {formSchema} from "@/lib/definitions"
-import {Button} from "@/components/ui/button"
+import { formSchema } from "@/lib/definitions"
+import { Button } from "@/components/ui/button"
 import {
     Form,
     FormControl,
@@ -16,13 +16,13 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import {Input} from "@/components/ui/input"
-import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group"
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { Input } from "@/components/ui/input"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import AuthBackground from "@/app/(auth)/_components/AuthBackground"
-import {handleSignup} from "@/app/(auth)/signup/actions";
+import { handleSignup } from "@/app/(auth)/signup/actions"
+import Link from "next/link"
 
 const Signup = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -41,7 +41,6 @@ const Signup = () => {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsLoading(true)
-
         try {
             await handleSignup(values)
         } catch (e) {
@@ -49,60 +48,69 @@ const Signup = () => {
         } finally {
             setIsLoading(false)
         }
-
     }
 
     return (
-        <div
-            className="min-h-screen flex items-center justify-center bg-gradient-to-r from-white via-sky-100 to-cyan-100 relative overflow-hidden">
-            <AuthBackground/>
-
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-white via-sky-100 to-cyan-100 relative overflow-hidden">
+            <AuthBackground />
             <motion.div
-                initial={{opacity: 0, y: 20}}
-                animate={{opacity: 1, y: 0}}
-                transition={{duration: 0.5}}
-                className="bg-white/80 backdrop-blur-sm p-8 rounded-lg shadow-lg w-full max-w-md z-10"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="bg-white/90 backdrop-blur-md p-8 rounded-lg shadow-xl w-full max-w-md z-10"
             >
-                <ToastContainer/>
-                <h2 className="text-2xl font-bold mb-6 text-center text-[#0e708b]">Create an Account</h2>
+                <ToastContainer />
+                <div className="flex items-center justify-center mb-6">
+                    <FileText className="text-[#0e708b] w-12 h-12" />
+                </div>
+                <h2 className="text-3xl font-bold mb-6 text-center text-[#0e708b]">Create an Account</h2>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <FormField
                             control={form.control}
                             name="username"
-                            render={({field}) => (
+                            render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Username</FormLabel>
+                                    <FormLabel className="flex items-center text-gray-700">
+                                        <UserCircle className="w-4 h-4 mr-2" />
+                                        Username
+                                    </FormLabel>
                                     <FormControl>
-                                        <Input placeholder="johndoe" {...field} />
+                                        <Input placeholder="johndoe" {...field} className="bg-gray-50 border-gray-300 focus:border-[#0e708b] focus:ring-[#0e708b]" />
                                     </FormControl>
-                                    <FormMessage/>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
                         <FormField
                             control={form.control}
                             name="email"
-                            render={({field}) => (
+                            render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel className="flex items-center text-gray-700">
+                                        <Mail className="w-4 h-4 mr-2" />
+                                        Email
+                                    </FormLabel>
                                     <FormControl>
-                                        <Input type="email" placeholder="john@example.com" {...field} />
+                                        <Input type="email" placeholder="john@example.com" {...field} className="bg-gray-50 border-gray-300 focus:border-[#0e708b] focus:ring-[#0e708b]" />
                                     </FormControl>
-                                    <FormMessage/>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
                         <FormField
                             control={form.control}
                             name="password"
-                            render={({field}) => (
+                            render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Password</FormLabel>
+                                    <FormLabel className="flex items-center text-gray-700">
+                                        <Lock className="w-4 h-4 mr-2" />
+                                        Password
+                                    </FormLabel>
                                     <FormControl>
-                                        <Input type="password" placeholder="********" {...field} />
+                                        <Input type="password" placeholder="********" {...field} className="bg-gray-50 border-gray-300 focus:border-[#0e708b] focus:ring-[#0e708b]" />
                                     </FormControl>
-                                    <FormMessage/>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -110,26 +118,32 @@ const Signup = () => {
                             <FormField
                                 control={form.control}
                                 name="firstName"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem className="flex-1">
-                                        <FormLabel>First Name</FormLabel>
+                                        <FormLabel className="flex items-center text-gray-700">
+                                            <User className="w-4 h-4 mr-2" />
+                                            First Name
+                                        </FormLabel>
                                         <FormControl>
-                                            <Input placeholder="John" {...field} />
+                                            <Input placeholder="John" {...field} className="bg-gray-50 border-gray-300 focus:border-[#0e708b] focus:ring-[#0e708b]" />
                                         </FormControl>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="lastName"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem className="flex-1">
-                                        <FormLabel>Last Name</FormLabel>
+                                        <FormLabel className="flex items-center text-gray-700">
+                                            <User className="w-4 h-4 mr-2" />
+                                            Last Name
+                                        </FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Doe" {...field} />
+                                            <Input placeholder="Doe" {...field} className="bg-gray-50 border-gray-300 focus:border-[#0e708b] focus:ring-[#0e708b]" />
                                         </FormControl>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
@@ -137,9 +151,9 @@ const Signup = () => {
                         <FormField
                             control={form.control}
                             name="role"
-                            render={({field}) => (
+                            render={({ field }) => (
                                 <FormItem className="space-y-3">
-                                    <FormLabel>Account Type</FormLabel>
+                                    <FormLabel className="text-gray-700">Account Type</FormLabel>
                                     <FormControl>
                                         <RadioGroup
                                             onValueChange={field.onChange}
@@ -148,40 +162,47 @@ const Signup = () => {
                                         >
                                             <FormItem className="flex items-center space-x-2 space-y-0">
                                                 <FormControl>
-                                                    <RadioGroupItem value="employee"/>
+                                                    <RadioGroupItem value="employee" id="employee" className="text-[#0e708b]" />
                                                 </FormControl>
-                                                <FormLabel className="font-normal">
+                                                <FormLabel htmlFor="employee" className="font-normal flex items-center cursor-pointer">
+                                                    <UserCircle className="w-5 h-5 mr-2 text-[#0e708b]" />
                                                     Employee
                                                 </FormLabel>
                                             </FormItem>
                                             <FormItem className="flex items-center space-x-2 space-y-0">
                                                 <FormControl>
-                                                    <RadioGroupItem value="manager"/>
+                                                    <RadioGroupItem value="manager" id="manager" className="text-[#0e708b]" />
                                                 </FormControl>
-                                                <FormLabel className="font-normal">
+                                                <FormLabel htmlFor="manager" className="font-normal flex items-center cursor-pointer">
+                                                    <Briefcase className="w-5 h-5 mr-2 text-[#0e708b]" />
                                                     Manager
                                                 </FormLabel>
                                             </FormItem>
                                         </RadioGroup>
                                     </FormControl>
-                                    <FormMessage/>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
                         <Button
                             type="submit"
-                            className="w-full bg-[#0e708b] hover:bg-[#0c5f75]"
+                            className="w-full bg-[#0e708b] hover:bg-[#0c5f75] transition-colors duration-300"
                             disabled={isLoading}
                         >
                             {isLoading ? (
                                 <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                     Please wait
                                 </>
                             ) : (
                                 "Sign Up"
                             )}
                         </Button>
+                        <div className="text-center mt-4">
+                            <Link href="/signin" className="text-sm text-[#0e708b] hover:underline">
+                                Already have an account? Sign in
+                            </Link>
+                        </div>
                     </form>
                 </Form>
             </motion.div>
