@@ -2,6 +2,7 @@
 import { z } from "zod";
 import { XMLParser } from "fast-xml-parser";
 import {loginFormSchema} from "@/lib/definitions";
+import {setSession} from "@/lib/auth.js";
 
 
 export const handleLogin = async (values: z.infer<typeof loginFormSchema>) => {
@@ -36,10 +37,10 @@ export const handleLogin = async (values: z.infer<typeof loginFormSchema>) => {
             throw new Error(faultString);
         }
 
-        const result = parsedXML["soap11env:Envelope"]?.["soap11env:Body"]?.["tns:login_userResponse"]?.["tns:login_userResult"];
-        if (!result) throw new Error("Token not found in response.");
+        const token = parsedXML["soap11env:Envelope"]?.["soap11env:Body"]?.["tns:login_userResponse"]?.["tns:login_userResult"];
+        if (!token) throw new Error("Token not found in response.");
+        await setSession(token);
 
-        return result;
     } catch (e) {
         const errorMessage = e instanceof Error ? e.message : "An unknown error occurred.";
         throw new Error(errorMessage);

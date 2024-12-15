@@ -49,8 +49,7 @@ const Signup = () => {
         if (isLoading) return;
         setIsLoading(true);
         try {
-            const token = await handleSignup(values);
-            localStorage.setItem("authToken", token);
+            await handleSignup(values);
             toast.success("Account Created successfully!");
         } catch (e) {
             const errorMessage = e instanceof Error ? e.message : "An unknown error occurred.";

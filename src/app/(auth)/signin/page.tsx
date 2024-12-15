@@ -24,6 +24,7 @@ import AuthBackground from "@/app/(auth)/_components/AuthBackground"
 import { handleLogin } from "@/app/(auth)/signin/actions"
 import Link from "next/link"
 import AuthBackgroundDarkTheme from "@/app/(auth)/_components/AuthBackgroundDarkTheme";
+import {setSession} from "@/lib/auth.js";
 
 
 
@@ -42,8 +43,7 @@ const Login = () => {
         setIsLoading(true);
 
         try {
-            const token = await handleLogin(values);
-            localStorage.setItem("authToken", token);
+            await handleLogin(values);
             toast.success("Logged in successfully!");
         } catch (e) {
             const errorMessage = e instanceof Error ? e.message : "An unknown error occurred.";
