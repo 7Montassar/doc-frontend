@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginFormSchema} from "@/lib/definitions"
 import * as z from "zod"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/app/(employee)/_components/ui/button"
 import {
     Form,
     FormControl,
@@ -15,8 +15,8 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+} from "@/app/(employee)/_components/ui/form"
+import { Input } from "@/app/(employee)/_components/ui/input"
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
