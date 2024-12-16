@@ -1,7 +1,8 @@
 
 import  AvailableActions  from '../_components/AvailableActions'
-import  OldDocumentsTable  from '../_components/OldDocumentsTable'
+import  OldDocumentsTable  from '@/components/OldDocumentsTable'
 import UploadOldDoc from '../_components/UploadOldDoc'
+import DocumentTable from '@/components/DocumentTable'
 export const Dashboard= () => {
     return (
         <div className="container mx-auto px-4 py-8">
@@ -20,6 +21,11 @@ export const Dashboard= () => {
             <section>
                 <h2 className="text-2xl font-semibold mb-4 text-[#0E708B]">Upload Old Document</h2>
                 <UploadOldDoc />
+            </section>
+            <section>
+            <h2 className="text-2xl font-semibold mb-4 text-[#0E708B]">Upload Old Document</h2>
+            <DocumentTable />
+                
             </section>
         </div>
     )

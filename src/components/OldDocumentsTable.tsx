@@ -9,7 +9,7 @@ export default function OldDocumentsTable() {
   const [error, setError] = useState<Error | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
-  const endpoint = process.env.NEXT_PUBLIC_API_BASE_URL ;
+  const endpoint = process.env.NEXT_PUBLIC_API_BASE_URL  ;
 
   // Fetch documents on component mount
   useEffect(() => {
