@@ -9,13 +9,13 @@ export default function OldDocumentsTable() {
   const [error, setError] = useState<Error | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
-  const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
+  const endpoint = process.env.NEXT_PUBLIC_API_BASE_URL ;
 
   // Fetch documents on component mount
   useEffect(() => {
     async function fetchDocuments() {
       try {
-        const response = await fetch(`${endpoint}/old_documents/`);
+        const response = await fetch(`${endpoint}/old_documents/`,{cache: 'force-cache'});
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }

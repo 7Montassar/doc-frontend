@@ -32,6 +32,33 @@ export default function DocumentTable() {
     const [searchTerm, setSearchTerm] = useState<string>('')
     const [currentPage, setCurrentPage] = useState<number>(1)
     const itemsPerPage = 10
+    async function openDocument(fileName: string) {
+        try {
+            console.log(fileName)
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/document/get_document/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ file_name: fileName })
+            });
+    
+            if (!response.ok) {
+                throw new Error('Network response was not okay');
+            }
+    
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+    
+            // Open the file in a new window pop up
+            window.open(url),focus();
+
+            
+        } catch (error) {
+            setMessage('Error: ' + (error as Error).message);
+        }
+    }
+
 
     useEffect(() => {
         async function fetchDocuments() {
@@ -146,7 +173,11 @@ export default function DocumentTable() {
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <Button variant="ghost" size="sm">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => openDocument(doc.fileName)}
+                                        >
                                             <ArrowUpRight className="h-4 w-4" />
                                             <span className="sr-only">View</span>
                                         </Button>
