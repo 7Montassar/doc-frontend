@@ -15,5 +15,7 @@ export function middleware(request: NextRequest) {
 
 // Specify the routes to protect
 export const config = {
-    matcher: ['/dashboard'],
+    matcher: ['/dashboard',
+        '/invoice',
+    ],
 };
