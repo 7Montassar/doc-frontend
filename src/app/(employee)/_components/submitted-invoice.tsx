@@ -39,7 +39,7 @@ export default function SubmittedInvoice({ clientName, clientEmail, dueDate, pro
     
     // Add content to the PDF
     pdf.setFontSize(18);
-    pdf.text('Invoice', 105, 15, { align: 'center' });
+    pdf.text('invoice', 105, 15, { align: 'center' });
     pdf.setFontSize(12);
     pdf.text(`Invoice #${invoiceNumber}`, 20, 30);
     pdf.text(`Date: ${format(new Date(), 'dd/MM/yyyy')}`, 20, 40);
