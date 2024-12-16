@@ -1,16 +1,18 @@
 "use server";
 import { XMLParser } from "fast-xml-parser";
-import { getAllUserRoleEnvelope } from "@/soap/envelopes";
+import {getAllUserRoleEnvelope, toggleUserStatusEnvelope} from "@/soap/envelopes";
 import { getSession } from "@/lib/auth";
 import {User} from "@/types/user";
+import {revalidatePath} from "next/cache";
+import { revalidateTag} from "next/cache";
 
 export const getAllUsers = async () => {
     try {
         const token = await getSession();
-        const soapEnvelope = getAllUserRoleEnvelope();
         const headers = {
             Authorization: `Bearer ${token}`,
         };
+        const soapEnvelope = getAllUserRoleEnvelope();
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/soap/`, {
             method: "POST",
@@ -20,52 +22,32 @@ export const getAllUsers = async () => {
                 ...headers,
             },
             body: soapEnvelope,
-            cache: "force-cache",
-        },  );
-
-        const responseText = await response.text();
-        console.log("responseText", responseText);
-
-        const parser = new XMLParser({
-            ignoreAttributes: false,
-            attributeNamePrefix: "@_",
-            removeNSPrefix: true, // Remove namespace prefixes for easier access
+            cache: "force-cache", // Ensure this is aligned with your use case
+            next: { tags: ['users'] }, // Attach the 'users' tag for revalidation
         });
-        const parsedXML = parser.parse(responseText);
 
         if (!response.ok) {
             throw new Error(`SOAP request failed with status ${response.status}: ${response.statusText}`);
         }
 
-        console.log("parsedXML", parsedXML);
+        const responseText = await response.text();
+        const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_", removeNSPrefix: true });
+        const parsedXML = parser.parse(responseText);
 
         const users: User[] = [];
-        const userNodes =
-            parsedXML?.Envelope?.Body?.get_all_usersResponse?.get_all_usersResult?.User || [];
-
-            for (const userNode of Array.isArray(userNodes) ? userNodes : [userNodes]) {
-                const id = userNode.id || "";
-                const username = userNode.username || "";
-                const email = userNode.email || "";
-                const role = userNode.role || "employee";
-                const first_name = userNode.first_name || "";
-                const last_name = userNode.last_name || "";
-                const manager_type = userNode.manager_type || undefined;
-                const is_active = userNode.is_active === true || userNode.is_active === "true";
-
-                users.push({
-                    id: parseInt(id, 10),
-                    username,
-                    email,
-                    role: role as "admin" | "manager" | "employee",
-                    first_name,
-                    last_name,
-                    manager_type,
-                    is_active,
-                });
-            }
-
-        console.log("users", users);
+        const userNodes = parsedXML?.Envelope?.Body?.get_all_usersResponse?.get_all_usersResult?.User || [];
+        for (const userNode of Array.isArray(userNodes) ? userNodes : [userNodes]) {
+            users.push({
+                id: parseInt(userNode.id, 10),
+                username: userNode.username,
+                email: userNode.email,
+                role: userNode.role as "admin" | "manager" | "employee",
+                first_name: userNode.first_name,
+                last_name: userNode.last_name,
+                manager_type: userNode.manager_type || undefined,
+                is_active: userNode.is_active === true || userNode.is_active === "true",
+            });
+        }
 
         return users;
     } catch (error) {
@@ -73,3 +55,45 @@ export const getAllUsers = async () => {
         return [];
     }
 };
+
+export const toggleUserStatus = async (userId: number): Promise<string> => {
+    try {
+        const soapEnvelope = `
+            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:proj="project.user">
+                <soapenv:Header/>
+                <soapenv:Body>
+                    <proj:toggle_account_status>
+                        <proj:userId>${userId}</proj:userId>
+                    </proj:toggle_account_status>
+                </soapenv:Body>
+            </soapenv:Envelope>
+        `;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/soap/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/xml",
+            },
+            body: soapEnvelope,
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const xml = await response.text();
+        const parser = new XMLParser();
+        const parsed = parser.parse(xml);
+
+        // Parse the relevant SOAP response
+        const result =
+            parsed["soap11env:Envelope"]?.["soap11env:Body"]?.["tns:toggle_account_statusResponse"]
+                ?.["tns:toggle_account_statusResult"];
+        revalidateTag('users')
+        return result || "Operation succeeded.";
+    } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : "An unknown error occurred.";
+        throw new Error(errorMessage);
+    }
+};
+

@@ -57,7 +57,7 @@ export const Dashboard = () => {
                                         {loading && <p>Loading users...</p>}
                                         {error && <p className="text-red-500">{error}</p>}
                                         {!loading && !error && users.length === 0 && <p>No users found.</p>}
-                                        {!loading && !error && users.length > 0 && <UserTable users={users} />} {/* Pass fetched users here */}
+                                        {!loading && !error && users.length > 0 && <UserTable initialUsers={users} />} {/* Pass fetched users here */}
                                     </section>
                                 )}
                                 {activeSection === 'documents' && (

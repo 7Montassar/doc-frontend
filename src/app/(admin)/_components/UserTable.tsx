@@ -1,3 +1,4 @@
+"use client"
 import { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
 import { Button } from "./ui/button"
@@ -14,28 +15,56 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
+import { toggleUserStatus } from "@/app/(admin)/actions"
+import {toast, ToastContainer} from "react-toastify";
+import {revalidatePath} from "next/cache";
+import { useRouter } from "next/navigation";
+
 
 interface UserTableProps {
-  users: User[]; // Accept users as a prop
+  initialUsers: User[]; // Accept users as a prop
 }
 
-export default function UserTable({ users }: UserTableProps) {
+export default function UserTable({ initialUsers }: UserTableProps) {
+  const [users, setUsers] = useState<User[]>(initialUsers)
   const [selectedRole, setSelectedRole] = useState<string | null>(null)
 
   const filteredUsers = selectedRole ? users.filter(user => user.role === selectedRole) : users
 
+
+  const router = useRouter()
   const handleAddUser = (role: string) => {
     console.log(`Add new ${role}`)
     // Implement the logic to add a new user with the specified role
   }
 
-  const handleActivateAccount = (userId: number) => {
-    console.log(`Activate account for user ${userId}`)
+  const handleActivateAccount = async (userId: number) => {
+    const prevUsers = [...users]
+
+    // Optimistically update the UI
+    setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+            user.id === userId ? { ...user, is_active: !user.is_active } : user
+        )
+    )
+
+    try {
+      const result = await toggleUserStatus(userId)
+      toast.success(result)
+      console.log(result)
+      router.refresh()
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "An unknown error occurred."
+      toast.error(errorMessage)
+      console.error(errorMessage)
+      setUsers(prevUsers)
+    }
   }
 
   return (
       <div className="space-y-4">
         <div className="flex justify-between items-center">
+          <ToastContainer />
           <Select onValueChange={(value) => setSelectedRole(value === 'all' ? null : value)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter by role" />

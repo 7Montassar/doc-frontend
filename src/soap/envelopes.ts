@@ -21,3 +21,16 @@ export const getAllUserRoleEnvelope = () => {
      </soapenv:Envelope>
     `;
 };
+
+export const toggleUserStatusEnvelope = (userId: number) => {
+    return `
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:proj="project.user">
+           <soapenv:Header/>
+           <soapenv:Body>
+              <proj:toggle_user_status>
+                 <proj:userId>${userId}</proj:userId>
+              </proj:toggle_user_status>
+           </soapenv:Body>
+        </soapenv:Envelope>
+    `;
+};
