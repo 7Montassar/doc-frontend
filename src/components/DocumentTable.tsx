@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/pagination"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
+import { openDocument } from './actions'
 export default function DocumentTable() {
     const [documents, setDocuments] = useState<DocumentType[]>([])
     const [loading, setLoading] = useState<boolean>(true)
@@ -32,6 +32,8 @@ export default function DocumentTable() {
     const [searchTerm, setSearchTerm] = useState<string>('')
     const [currentPage, setCurrentPage] = useState<number>(1)
     const itemsPerPage = 10
+
+    
 
     useEffect(() => {
         async function fetchDocuments() {
@@ -66,6 +68,23 @@ export default function DocumentTable() {
         fetchDocuments();
     }, []);
 
+    const handleOpenDocument = async (fileName: string) => {
+        try {
+                const blob = await openDocument(fileName);
+               const url = window.URL.createObjectURL(blob);
+
+                // Open the file in a new window pop-up
+                const newWindow = window.open(url);
+                if (newWindow) {
+                        newWindow.focus();
+                } else {
+                        throw new Error('Failed to open the document in a new window');
+                }
+
+            } catch (error) {
+                console.error('Error opening the document:', error);
+            }
+    };
 
     const filteredDocuments = documents.filter(doc =>
         doc.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -146,7 +165,11 @@ export default function DocumentTable() {
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <Button variant="ghost" size="sm">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => handleOpenDocument(doc.fileName)}
+                                        >
                                             <ArrowUpRight className="h-4 w-4" />
                                             <span className="sr-only">View</span>
                                         </Button>
