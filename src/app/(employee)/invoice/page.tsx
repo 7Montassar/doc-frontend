@@ -80,7 +80,6 @@ export default function InvoiceForm() {
                       mode="single"
                       selected={dueDate}
                       onSelect={setDueDate}
-                      initialFocus
                     />
                   </PopoverContent>
                 </Popover>
@@ -94,7 +93,7 @@ export default function InvoiceForm() {
             </form>
           </CardContent>
         </Card>
-        <Preview 
+        <Preview
           clientName={clientName}
           clientEmail={clientEmail}
           dueDate={dueDate}
