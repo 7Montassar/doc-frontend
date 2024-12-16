@@ -9,7 +9,8 @@ export default function ReportForm() {
   const [subject, setSubject] = useState('')
   const [description, setDescription] = useState('')
   const [submitted, setSubmitted] = useState(false)
-  const [reportNumber, setReportNumber] = useState(1234) // Example report number
+  const [reportNumber, setReportNumber] = useState(Math.floor(Math.random() * 1000000))// Example report number
+
 
 
   const handleSubmit = (e: React.FormEvent) => {

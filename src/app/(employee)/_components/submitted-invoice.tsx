@@ -6,7 +6,6 @@ import logo from '@/../public/logo.png'
 import Image from "next/image"
 import { jsPDF } from 'jspdf';
 import { handleUpload } from "../action"
-import html2canvas from 'html2canvas'
 
 
 interface Product {
@@ -32,43 +31,82 @@ export default function SubmittedInvoice({ clientName, clientEmail, dueDate, pro
 
   const HandleUpload = async () => {
     try {
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
 
-      // Get the invoice content
-      const invoiceElement = document.getElementById('invoice-content');
-      if (!invoiceElement) {
-        throw new Error('Invoice element not found');
+      // Set font styles
+      pdf.setFont("helvetica", "bold")
+      pdf.setFontSize(24)
+      pdf.setTextColor(14, 112, 139) // #0E708B
+
+      // Add title
+      pdf.text("DocFlow", 20, 20)
+
+      // Add invoice number
+      pdf.setFontSize(12)
+      pdf.setTextColor(128, 128, 128) // Gray color
+      pdf.text(`Invoice #${invoiceNumber}`, 20, 28)
+
+      // Add client details
+      pdf.setFont("helvetica", "normal")
+      pdf.setFontSize(12)
+      pdf.setTextColor(0, 0, 0) // Black color
+      pdf.text(`Client: ${clientName}`, 20, 40)
+      pdf.text(`Email: ${clientEmail}`, 20, 48)
+
+      // Add invoice date
+      pdf.text(`Invoice Date: ${format(new Date(), 'dd/MM/yyyy')}`, 150, 40, { align: 'right' })
+
+      // Add due date
+      pdf.text(`Due Date: ${dueDate ? format(dueDate, 'dd/MM/yyyy') : 'Not set'}`, 150, 48, { align: 'right' })
+
+      // Add products table
+      pdf.setFont("helvetica", "bold")
+      pdf.setFontSize(12)
+      pdf.setTextColor(0, 0, 0)
+
+      let yPosition = 80
+      const addProductRow = (product: Product) => {
+        pdf.text(product.name, 20, yPosition)
+        pdf.text(`${product.quantity}`, 100, yPosition, { align: 'right' })
+        pdf.text(`$${product.price.toFixed(2)}`, 120, yPosition, { align: 'right' })
+        pdf.text(`$${(product.quantity * product.price).toFixed(2)}`, 150, yPosition, { align: 'right' })
+        yPosition += 8
       }
 
-      // Extract text content for the PDF
-      const invoiceText = invoiceElement.innerText || invoiceElement.textContent;
-      if (!invoiceText) {
-        throw new Error('Invoice content is empty');
-      }
+      pdf.text("Product", 20, yPosition)
+      pdf.text("Quantity", 100, yPosition, { align: 'right' })
+      pdf.text("Price", 120, yPosition, { align: 'right' })
+      pdf.text("Total", 150, yPosition, { align: 'right' })
+      yPosition += 2
+      pdf.line(20, yPosition, 200, yPosition)
+      yPosition += 8
 
-      // Add text to the PDF (as a fallback for OCR issues)
-      pdf.text(invoiceText, 10, 10); // Add text at position (10, 10)
+      products.forEach(addProductRow)
 
-      // Optional: Capture the visual content using html2canvas
-      const canvas = await html2canvas(invoiceElement);
-      const imgData = canvas.toDataURL('image/png');
-      pdf.addImage(imgData, 'PNG', 10, 20, 190, 150);
+      // Add subtotal, TVA, and total
+      pdf.setFont("helvetica", "normal")
+      pdf.setFontSize(12)
+      pdf.text(`Subtotal: $${subtotal.toFixed(2)}`, 150, yPosition, { align: 'right' })
+      yPosition += 8
+      pdf.text(`TVA (${tva}%): $${tvaAmount.toFixed(2)}`, 150, yPosition, { align: 'right' })
+      yPosition += 8
+      pdf.text(`Total: $${total.toFixed(2)}`, 150, yPosition, { align: 'right' })
 
       // Convert PDF to blob
-      const pdfBlob = pdf.output('blob');
+      const pdfBlob = pdf.output('blob')
 
       // Create FormData and append the PDF
-      const formData = new FormData();
-      formData.append('file', pdfBlob, `invoice_${invoiceNumber}.pdf`);
-      formData.append('owner_id', '1'); // Example metadata
+      const formData = new FormData()
+      formData.append('file', pdfBlob, `invoice_${invoiceNumber}.pdf`)
+      formData.append('owner_id', '1') // Example metadata
 
       // Send the request
-      await handleUpload(formData);
-      console.log('Upload successful');
+      await handleUpload(formData)
+      console.log('Upload successful')
     } catch (error) {
-      console.error('Error creating or uploading the PDF:', error);
+      console.error('Error creating or uploading the PDF:', error)
     }
-  };
+  }
 
 
   return (
