@@ -1,5 +1,6 @@
 "use client"
 import { useState } from 'react'
+import 'react-toastify/dist/ReactToastify.css';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
 import { Button } from "./ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"

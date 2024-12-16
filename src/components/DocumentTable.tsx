@@ -1,5 +1,5 @@
 'use client'
-
+import 'react-toastify/dist/ReactToastify.css';
 import React, { useEffect, useState } from 'react'
 import { ArrowUpRight, Search, Loader2 } from 'lucide-react'
 import { DocumentType } from '@/types/DocumentType'
@@ -24,6 +24,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { openDocument } from './actions'
+import {toast, ToastContainer} from "react-toastify";
 export default function DocumentTable() {
     const [documents, setDocuments] = useState<DocumentType[]>([])
     const [loading, setLoading] = useState<boolean>(true)
@@ -38,7 +39,7 @@ export default function DocumentTable() {
     useEffect(() => {
         async function fetchDocuments() {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/document/`,{cache: "force-cache"});
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/document/`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -70,8 +71,9 @@ export default function DocumentTable() {
 
     const handleOpenDocument = async (fileName: string) => {
         try {
+                toast.success("Document is downloading ! Please wait");
                 const blob = await openDocument(fileName);
-               const url = window.URL.createObjectURL(blob);
+                const url = window.URL.createObjectURL(blob);
 
                 // Open the file in a new window pop-up
                 const newWindow = window.open(url);
@@ -83,7 +85,8 @@ export default function DocumentTable() {
 
             } catch (error) {
                 console.error('Error opening the document:', error);
-            }
+                toast.error("Failed to open the document !");
+        }
     };
 
     const filteredDocuments = documents.filter(doc =>
@@ -122,7 +125,7 @@ export default function DocumentTable() {
 
     return (
         <Card className="w-full">
-
+            <ToastContainer />
             <CardContent>
                 {message && (
                     <p className="mb-4 p-2 rounded bg-green-100 text-green-800">{message}</p>

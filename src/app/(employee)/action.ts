@@ -8,7 +8,7 @@ export const handleUpload = async (formData: FormData) => {
     try {
         const response = await fetch(`${endpoint}/document/upload_and_save/`, {
           headers: {
-            'Authorization': `${token}` // Add Bearer if it's token-based auth
+            'Authorization': `Bearer ${token}`,
           },
           method: 'POST',
           body: formData,

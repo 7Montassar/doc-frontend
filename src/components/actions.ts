@@ -10,7 +10,7 @@ export async function openDocument(fileName: string) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `${token}`
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({ file_name: fileName })
         });
