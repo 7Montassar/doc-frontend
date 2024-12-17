@@ -14,26 +14,30 @@ export const getUserRoleEnvelope = (token: String) => {
 export const getAllUsersEnvelope = (token: String) => {
     return `
      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:proj="project.user" xmlns:proj1="project.user.headers">
-              <soapenv:Header/>
-              <soapenv:Body>
-                 <proj:get_all_users/>
-              </soapenv:Body>
-     </soapenv:Envelope>
+   <soapenv:Header/>
+   <soapenv:Body>
+      <proj:get_all_users>
+         <proj:headers>
+            <proj1:authorization>${token}</proj1:authorization>
+         </proj:headers>
+      </proj:get_all_users>
+   </soapenv:Body>
+</soapenv:Envelope>
     `;
 };
 
-export const toggleUserStatusEnvelope = (userId: number) => {
+export const toggleUserStatusEnvelope = (userId: number, token: String) => {
     return `
-    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:proj="project.user">
-           <soapenv:Header/>
-           <soapenv:Body>
-              <proj:toggle_user_status>
-               <proj:headers>
-                          <proj1:authorization>${token}</proj1:authorization>
-                     </proj:headers>
-                 <proj:userId>${userId}</proj:userId>
-              </proj:toggle_user_status>
-           </soapenv:Body>
-        </soapenv:Envelope>
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:proj="project.user" xmlns:proj1="project.user.headers">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <proj:toggle_account_status>
+         <proj:headers>
+            <proj1:authorization>${token}</proj1:authorization>
+         </proj:headers>
+         <proj:userId>${userId}</proj:userId>
+      </proj:toggle_account_status>
+   </soapenv:Body>
+</soapenv:Envelope>
     `;
 };
