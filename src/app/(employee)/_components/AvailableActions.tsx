@@ -1,3 +1,5 @@
+"use client"
+
 import {FileText, Calendar, BarChart} from 'lucide-react'
 
 export default function AvailableActions() {

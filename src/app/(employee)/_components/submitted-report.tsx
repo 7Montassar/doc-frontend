@@ -66,7 +66,7 @@
                 pdf.text(splitDescription, 28, 80);
 
                 // Date
-                pdf.text(`Submission Date: ${format(new Date(), 'dd/MM/yyyy')}`, 150, 40, { align: 'right' });
+                pdf.text(`Submission Date: ${format(new Date(), 'dd/MM/yyyy')}`, 200, 40, { align: 'right' });
 
                 // Footer
                 pdf.setFontSize(10);
@@ -155,7 +155,7 @@
                         </div>
                         <div className="text-center mt-6">
                             <Button onClick={handleDownload} className="bg-[#0E708B] hover:bg-[#0A5A6F]">
-                                <Download className="mr-2 h-4 w-4" /> Download Report
+                                <Download className="mr-2 h-4 w-4" /> Submit Report
                             </Button>
                         </div>
                     </CardContent>
