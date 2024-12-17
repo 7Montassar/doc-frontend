@@ -1,25 +1,19 @@
 "use server";
 import { XMLParser } from "fast-xml-parser";
-import {getAllUserRoleEnvelope, toggleUserStatusEnvelope} from "@/soap/envelopes";
+import {getAllUsersEnvelope, toggleUserStatusEnvelope} from "@/soap/envelopes";
 import { getSession } from "@/lib/auth";
 import {User} from "@/types/user";
-import {revalidatePath} from "next/cache";
 import { revalidateTag} from "next/cache";
 
 export const getAllUsers = async () => {
     try {
         const token = await getSession();
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
-        const soapEnvelope = getAllUserRoleEnvelope();
-
+        const soapEnvelope = getAllUsersEnvelope(token);
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/soap/`, {
             method: "POST",
             headers: {
                 "Content-Type": "text/xml",
                 "SOAPAction": "project.user",
-                ...headers,
             },
             body: soapEnvelope,
             cache: "force-cache", // Ensure this is aligned with your use case
@@ -57,13 +51,17 @@ export const getAllUsers = async () => {
 };
 
 export const toggleUserStatus = async (userId: number): Promise<string> => {
+    const token = await getSession();
     try {
         const soapEnvelope = `
-            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:proj="project.user">
+        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:proj="project.user" xmlns:proj1="project.user.headers">
                 <soapenv:Header/>
                 <soapenv:Body>
                     <proj:toggle_account_status>
-                        <proj:userId>${userId}</proj:userId>
+                    <proj:headers>
+                         <proj1:authorization>${token}</proj1:authorization>
+                    </proj:headers>
+                            <proj:userId>${userId}</proj:userId>
                     </proj:toggle_account_status>
                 </soapenv:Body>
             </soapenv:Envelope>
