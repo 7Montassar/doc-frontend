@@ -25,3 +25,28 @@ export const handleUpload = async (formData: FormData) => {
         // You might want to show an error message to the user here
       }
   };
+
+export const handleUploadCustomDoc = async (formData: FormData) => {
+    const token = await getSession();
+
+    // Send the request
+    try {
+        const response = await fetch(`${endpoint}/document/upload_and_save_custom_document/`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        console.log('Upload successful:', data);
+        // You might want to show a success message to the user here
+    } catch (error) {
+        console.error('Error uploading the file:', error);
+        // You might want to show an error message to the user here
+    }
+};

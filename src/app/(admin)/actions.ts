@@ -1,6 +1,6 @@
 "use server";
 import { XMLParser } from "fast-xml-parser";
-import {getAllUserRoleEnvelope, toggleUserStatusEnvelope} from "@/soap/envelopes";
+import {getAllUsersEnvelope, toggleUserStatusEnvelope} from "@/soap/envelopes";
 import { getSession } from "@/lib/auth";
 import {User} from "@/types/user";
 import {revalidatePath} from "next/cache";
@@ -12,7 +12,7 @@ export const getAllUsers = async () => {
         const headers = {
             Authorization: `Bearer ${token}`,
         };
-        const soapEnvelope = getAllUserRoleEnvelope();
+        const soapEnvelope = getAllUsersEnvelope(token);
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/soap/`, {
             method: "POST",
@@ -22,8 +22,7 @@ export const getAllUsers = async () => {
                 ...headers,
             },
             body: soapEnvelope,
-            cache: "force-cache", // Ensure this is aligned with your use case
-            next: { tags: ['users'] }, // Attach the 'users' tag for revalidation
+
         });
 
         if (!response.ok) {
@@ -58,16 +57,8 @@ export const getAllUsers = async () => {
 
 export const toggleUserStatus = async (userId: number): Promise<string> => {
     try {
-        const soapEnvelope = `
-            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:proj="project.user">
-                <soapenv:Header/>
-                <soapenv:Body>
-                    <proj:toggle_account_status>
-                        <proj:userId>${userId}</proj:userId>
-                    </proj:toggle_account_status>
-                </soapenv:Body>
-            </soapenv:Envelope>
-        `;
+        const token = await getSession();
+        const soapEnvelope = toggleUserStatusEnvelope(userId, token);
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/soap/`, {
             method: "POST",
