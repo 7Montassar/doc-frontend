@@ -7,6 +7,9 @@ import { Download, Calendar, User, FileText } from 'lucide-react'
 import Image from "next/image"
 import { jsPDF } from 'jspdf'
 import { handleUpload } from "../action"
+import { redirect } from "next/dist/server/api-utils"
+import { toast } from "react-toastify"
+import router from "next/router"
 
 interface SubmittedDayOffProps {
     employeeName: string
@@ -52,7 +55,7 @@ export default function SubmittedDayOff({
             pdf.text(`Email: ${employeeEmail}`, 20, 48);
 
             // Add request date
-            pdf.text(`Request Date: ${format(new Date(), 'dd/MM/yyyy')}`, 150, 40, { align: 'right' });
+            pdf.text(`Request Date: ${format(new Date(), 'dd/MM/yyyy')}`, 200, 40, { align: 'right' });
 
             // Add logo
             const logoUrl = '/logo.png';
@@ -105,6 +108,8 @@ export default function SubmittedDayOff({
 
             await handleUpload(formData);
             console.log('Upload successful');
+            toast.success("Request submitted successfully!");
+            router.push('/dashboard'); // assuming you're using Next.js useRouter hook
         } catch (error) {
             console.error('Error creating or uploading the PDF:', error);
         }
@@ -173,7 +178,7 @@ export default function SubmittedDayOff({
                 </div>
                 <div className="text-center mt-6">
                     <Button onClick={HandleUpload} className="bg-[#0E708B] hover:bg-[#0A5A6F]">
-                        <Download className="mr-2 h-4 w-4"/> Download Request
+                        <Download className="mr-2 h-4 w-4"/> Submit Request
                     </Button>
                 </div>
             </Card>

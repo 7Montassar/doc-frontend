@@ -24,3 +24,12 @@ export const getUserRole = async () => {
         return "none"
     }
 };
+export const getToken = async () => {
+    try {
+        const token = await getSession();
+        return token;
+    } catch (error) {
+        console.error("Failed to get token:", error);
+        return "none"
+    }
+}

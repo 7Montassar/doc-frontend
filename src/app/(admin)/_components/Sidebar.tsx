@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { BarChart, Users, FileText, Archive } from 'lucide-react'
+import { BarChart, Users, FileText, Archive, LogOut } from 'lucide-react'
 import { cn } from "@/lib/utils"
 import {
   Sidebar,
@@ -13,7 +13,10 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarFooter,
 } from '@/components/ui/sidebar'
+import { Button } from './ui/button'
+import { clearSession } from '@/lib/auth'
 
 type SidebarProps = {
   onSectionChange: (section: string) => void
@@ -54,6 +57,19 @@ export function DashboardSidebar({ onSectionChange, activeSection }: SidebarProp
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter
+        className="flex items-center justify-center gap-2 text-sm text-gray-500"
+      >
+        <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={async() => {await clearSession(); window.location.reload();}}
+              className="mb-8 w-full text-white bg-[#0E708B] hover:bg-[#0c5f75] hover:text-gray-900 hover:bg-gray-100"
+            >
+              <LogOut className=" mr-2 h-4 w-4" />
+              Logout
+            </Button>
+      </SidebarFooter>
     </Sidebar>
   )
 }

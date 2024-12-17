@@ -22,7 +22,8 @@ export const getAllUsers = async () => {
                 ...headers,
             },
             body: soapEnvelope,
-
+            cache: "force-cache", // Ensure this is aligned with your use case
+            next: { tags: ['users'] }, // Attach the 'users' tag for revalidation
         });
 
         if (!response.ok) {

@@ -54,10 +54,10 @@ export default function SubmittedInvoice({ clientName, clientEmail, dueDate, pro
       pdf.text(`Email: ${clientEmail}`, 20, 48)
 
       // Add invoice date
-      pdf.text(`Invoice Date: ${format(new Date(), 'dd/MM/yyyy')}`, 150, 40, { align: 'right' })
+      pdf.text(`Invoice Date: ${format(new Date(), 'dd/MM/yyyy')}`, 200, 40, { align: 'right' })
 
       // Add due date
-      pdf.text(`Due Date: ${dueDate ? format(dueDate, 'dd/MM/yyyy') : 'Not set'}`, 150, 48, { align: 'right' })
+      pdf.text(`Due Date: ${dueDate ? format(dueDate, 'dd/MM/yyyy') : 'Not set'}`, 200, 48, { align: 'right' })
 
       // Add products table
       pdf.setFont("helvetica", "bold")
@@ -69,28 +69,31 @@ export default function SubmittedInvoice({ clientName, clientEmail, dueDate, pro
         pdf.text(product.name, 20, yPosition)
         pdf.text(`${product.quantity}`, 100, yPosition, { align: 'right' })
         pdf.text(`$${product.price.toFixed(2)}`, 120, yPosition, { align: 'right' })
-        pdf.text(`$${(product.quantity * product.price).toFixed(2)}`, 150, yPosition, { align: 'right' })
+        pdf.text(`$${(product.quantity * product.price).toFixed(2)}`, 200, yPosition, { align: 'right' })
         yPosition += 8
       }
 
       pdf.text("Product", 20, yPosition)
       pdf.text("Quantity", 100, yPosition, { align: 'right' })
       pdf.text("Price", 120, yPosition, { align: 'right' })
-      pdf.text("Total", 150, yPosition, { align: 'right' })
+      pdf.text("Total", 200, yPosition, { align: 'right' })
       yPosition += 2
+      pdf.setDrawColor(14,112,139)
       pdf.line(20, yPosition, 200, yPosition)
       yPosition += 8
+      pdf.setTextColor(0, 0, 0)
 
       products.forEach(addProductRow)
+      yPosition += 10
 
       // Add subtotal, TVA, and total
       pdf.setFont("helvetica", "normal")
       pdf.setFontSize(12)
-      pdf.text(`Subtotal: $${subtotal.toFixed(2)}`, 150, yPosition, { align: 'right' })
+      pdf.text(`Subtotal: $${subtotal.toFixed(2)}`, 200, yPosition, { align: 'right' })
       yPosition += 8
-      pdf.text(`TVA (${tva}%): $${tvaAmount.toFixed(2)}`, 150, yPosition, { align: 'right' })
+      pdf.text(`TVA (${tva}%): $${tvaAmount.toFixed(2)}`, 200, yPosition, { align: 'right' })
       yPosition += 8
-      pdf.text(`Total: $${total.toFixed(2)}`, 150, yPosition, { align: 'right' })
+      pdf.text(`Total: $${total.toFixed(2)}`, 200, yPosition, { align: 'right' })
 
       // Convert PDF to blob
       const pdfBlob = pdf.output('blob')
@@ -172,7 +175,7 @@ export default function SubmittedInvoice({ clientName, clientEmail, dueDate, pro
             </div>
             <div className="text-center mt-6">
               <Button onClick={HandleUpload} className="bg-[#0E708B] hover:bg-[#0A5A6F]">
-                <Download className="mr-2 h-4 w-4" /> Upload Invoice
+                <Download className="mr-2 h-4 w-4" /> Submit Invoice
               </Button>
             </div>
           </CardContent>

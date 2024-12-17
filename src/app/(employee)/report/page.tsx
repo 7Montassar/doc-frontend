@@ -1,6 +1,7 @@
 "use client"
 import { useState } from 'react'
 import SubmittedReport from "@/app/(employee)/_components/submitted-report";
+import Navbar from '@/components/Navbar';
 
 export default function ReportForm() {
   const [email, setEmail] = useState('')
@@ -33,6 +34,7 @@ export default function ReportForm() {
 
   return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <Navbar />
         <div className="max-w-md w-full space-y-8 bg-white p-6 sm:p-8 rounded-xl shadow-md">
           <div>
             <h1 className="text-3xl font-bold text-center text-[#0E708B]">Report Submission</h1>
