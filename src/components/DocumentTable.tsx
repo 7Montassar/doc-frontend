@@ -25,7 +25,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { openDocument } from './actions';
 import { getToken, getUserRole } from "@/app/dashboard/actions";
 import { toast, ToastContainer } from "react-toastify";
-import { getSession } from '@/lib/auth';
+import WorkflowPopup from './WorkflowPopup';
 
 export default function DocumentTable() {
   const [documents, setDocuments] = useState<DocumentType[]>([]);
@@ -35,6 +35,8 @@ export default function DocumentTable() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 10;
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [showWorkflow, setShowWorkflow] = useState<boolean>(false);
+  const [selectedDocumentId, setSelectedDocumentId] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchUserRole() {
@@ -68,7 +70,7 @@ export default function DocumentTable() {
           break;
       }
       try {
-        const token =await getToken();
+        const token = await getToken();
         console.log(token)
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/document/${url}`, {
           method: 'GET',
@@ -203,12 +205,23 @@ export default function DocumentTable() {
             <TableBody>
               {paginatedDocuments.map((doc) => (
                 <TableRow key={doc.id}>
-                  <TableCell className="font-medium">{doc.fileName}</TableCell>
+                  <TableCell className="font-medium">
+                    <Button
+                      variant="link"
+                      className="p-0 h-auto font-medium"
+                      onClick={() => {
+                        setSelectedDocumentId(doc.id);
+                        setShowWorkflow(true);
+                      }}
+                    >
+                      {doc.fileName}
+                    </Button>
+                  </TableCell>
                   <TableCell>{doc.category}</TableCell>
                   <TableCell>{new Date(doc.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell>{doc.summary}</TableCell>
                   <TableCell>
-                    {(userRole) === "admin" || (userRole) === "manager" ? (
+                    {(userRole === "admin" || userRole === "manager") ? (
                       <div className="flex items-center space-x-2">
                         <select
                           value={doc.status}
@@ -274,6 +287,12 @@ export default function DocumentTable() {
           </PaginationContent>
         </Pagination>
       </CardContent>
+      {showWorkflow && selectedDocumentId && (
+        <WorkflowPopup
+          documentId={selectedDocumentId}
+          onClose={() => setShowWorkflow(false)}
+        />
+      )}
     </Card>
   );
 }
