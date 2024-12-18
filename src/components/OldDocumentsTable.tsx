@@ -1,6 +1,7 @@
 'use client'
+
 import React, { useEffect, useState } from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Check } from 'lucide-react';
 import { OldDocumentType } from '@/types/OldDocumentType';
 
 export default function OldDocumentsTable() {
@@ -9,13 +10,13 @@ export default function OldDocumentsTable() {
   const [error, setError] = useState<Error | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
-  const endpoint = process.env.NEXT_PUBLIC_API_BASE_URL  ;
+  const endpoint = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   // Fetch documents on component mount
   useEffect(() => {
     async function fetchDocuments() {
       try {
-        const response = await fetch(`${endpoint}/old_documents/`,{cache: 'force-cache'});
+        const response = await fetch(`${endpoint}/old_documents/`);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -40,26 +41,24 @@ export default function OldDocumentsTable() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          status: 'migrated', // The field to update
+          status: 'migrated',
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
-      // Optional: Update the document status locally after successful update
+
       setDocuments((prevDocs) =>
-        prevDocs.map((d) =>
-          d.id === doc.id ? { ...d, status: 'migrated' } : d
-        )
+          prevDocs.map((d) =>
+              d.id === doc.id ? { ...d, status: 'migrated' } : d
+          )
       );
       setMessage('Document migrated successfully!');
     } catch (err) {
       setMessage(`Error: ${err instanceof Error ? err.message : 'Migration failed'}`);
     }
   };
-  
 
   // Handle document migration
   const migrateDocument = async (doc: OldDocumentType) => {
@@ -77,22 +76,15 @@ export default function OldDocumentsTable() {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const responseText = await response.text();
+        throw new Error(`Error: ${responseText || `HTTP error! Status: ${response.status}`}`);
       }
 
-      // Update the document's status in the table
-      setDocuments((prevDocs) =>
-        prevDocs.map((d) =>
-          d.id === doc.id ? { ...d, status: 'migrated' } : d
-        )
-      );
-
-      // Update status in old database
       await updateOldDocumentStatus(doc);
-
       setMessage('Document migrated successfully!');
     } catch (err) {
-      setMessage(`Error: ${err instanceof Error ? err.message : 'Migration failed'}`);
+      const errorMessage = err instanceof Error ? err.message : 'Migration failed';
+      setMessage(`Error: ${errorMessage}`);
     }
   };
 
@@ -105,14 +97,13 @@ export default function OldDocumentsTable() {
   }
 
   return (
-    <div className="overflow-x-auto w-full">
-      {/* Success/Error message */}
-      {message && (
-        <p className="mb-4 p-2 rounded bg-green-200 text-green-800">{message}</p>
-      )}
+      <div className="overflow-x-auto w-full">
+        {message && (
+            <p className="mb-4 p-2 rounded bg-green-200 text-green-800">{message}</p>
+        )}
 
-      <table className="min-w-full bg-white border border-gray-300 w-full">
-        <thead>
+        <table className="min-w-full bg-white border border-gray-300 w-full">
+          <thead>
           <tr className="bg-gray-100">
             <th className="py-2 px-4 border-b text-left">Filename</th>
             <th className="py-2 px-4 border-b text-left">Category</th>
@@ -120,38 +111,41 @@ export default function OldDocumentsTable() {
             <th className="py-2 px-4 border-b text-left">Status</th>
             <th className="py-2 px-4 border-b text-left">Action</th>
           </tr>
-        </thead>
-        <tbody>
+          </thead>
+          <tbody>
           {documents.map((doc) => (
-            <tr
-              key={doc.id}
-              className={`hover:bg-gray-50 ${
-                doc.status === 'migrated' ? 'bg-gray-100' : ''
-              }`}
-            >
-              <td className="py-2 px-4 border-b">{doc.filename}</td>
-              <td className="py-2 px-4 border-b">{doc.category}</td>
-              <td className="py-2 px-4 border-b">
-                {new Date(doc.created_at).toLocaleDateString()}
-              </td>
-              <td className="py-2 px-4 border-b">
-                {doc.status === 'migrated' ? 'Migrated' : 'Pending'}
-              </td>
-              <td className="py-2 px-4 border-b">
-                {doc.status === 'pending' && (
-                  <button
-                    onClick={() => migrateDocument(doc)}
-                    className="flex items-center text-[#0E708B] hover:text-[#0E708B]/80"
-                  >
-                    Migrate
-                    <ArrowUpRight className="w-4 h-4 ml-1" />
-                  </button>
-                )}
-              </td>
-            </tr>
+              <tr
+                  key={doc.id}
+                  className={`hover:bg-gray-50 ${
+                      doc.status === 'migrated' ? 'bg-gray-100' : ''
+                  }`}
+              >
+                <td className="py-2 px-4 border-b">{doc.filename}</td>
+                <td className="py-2 px-4 border-b">{doc.category}</td>
+                <td className="py-2 px-4 border-b">
+                  {new Date(doc.created_at).toLocaleDateString()}
+                </td>
+                <td className="py-2 px-4 border-b">
+                  {doc.status === 'migrated' ? 'Migrated' : 'Pending'}
+                </td>
+                <td className="py-2 px-4 border-b">
+                  {doc.status === 'migrated' ? (
+                      <Check className="w-5 h-5 text-green-500" />
+                  ) : (
+                      <button
+                          onClick={() => migrateDocument(doc)}
+                          className="flex items-center text-[#0E708B] hover:text-[#0E708B]/80"
+                      >
+                        Migrate
+                        <ArrowUpRight className="w-4 h-4 ml-1" />
+                      </button>
+                  )}
+                </td>
+              </tr>
           ))}
-        </tbody>
-      </table>
-    </div>
+          </tbody>
+        </table>
+      </div>
   );
 }
+

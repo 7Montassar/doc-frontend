@@ -11,8 +11,8 @@ export default function DayOffRequestForm() {
   const [description, setDescription] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [requestNumber] = useState(Math.floor(Math.random() * 1000000)) // Random request number
-  const [employeeName] = useState('John Doe') // Placeholder, use actual user info
-  const [employeeEmail] = useState('johndoe@example.com') // Placeholder
+  const [employeeName, setEmployeeName] = useState('') // Placeholder, use actual user info
+  const [employeeEmail,  setEmployeeEmail] = useState('') // Placeholder
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,6 +41,31 @@ export default function DayOffRequestForm() {
             <h1 className="text-3xl font-bold text-center text-[#0E708B]">Day Off Request</h1>
           </div>
           <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="start-date" className="block text-sm font-medium text-gray-700">Employee Name</label>
+              <input
+                  id="employee-name"
+                  name="employee-name"
+                  type="text"
+                  required
+                  value={employeeName}
+                  onChange={(e) => setEmployeeName(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#0E708B] focus:border-[#0E708B] sm:text-sm"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="start-date" className="block text-sm font-medium text-gray-700">Employee Email</label>
+              <input
+                  id="employee-email"
+                  name="employee-email"
+                  type="email"
+                  required
+                  value={employeeEmail}
+                  onChange={(e) => setEmployeeEmail(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#0E708B] focus:border-[#0E708B] sm:text-sm"
+              />
+            </div>
             <div>
               <label htmlFor="start-date" className="block text-sm font-medium text-gray-700">Start Date</label>
               <input
@@ -98,7 +123,8 @@ export default function DayOffRequestForm() {
               />
             </div>
             <div>
-              <button type="submit" className="w-full py-2 px-4 bg-[#0E708B] text-white rounded-md">Submit Request</button>
+              <button type="submit" className="w-full py-2 px-4 bg-[#0E708B] text-white rounded-md">Submit Request
+              </button>
             </div>
           </form>
         </div>
