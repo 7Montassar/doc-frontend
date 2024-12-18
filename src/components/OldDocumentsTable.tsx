@@ -105,13 +105,13 @@ export default function OldDocumentsTable() {
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto w-full">
       {/* Success/Error message */}
       {message && (
         <p className="mb-4 p-2 rounded bg-green-200 text-green-800">{message}</p>
       )}
 
-      <table className="min-w-full bg-white border border-gray-300">
+      <table className="min-w-full bg-white border border-gray-300 w-full">
         <thead>
           <tr className="bg-gray-100">
             <th className="py-2 px-4 border-b text-left">Filename</th>

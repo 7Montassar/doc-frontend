@@ -8,7 +8,7 @@
     import { WorkflowTimeline } from "./WorkflowTimeline"
     import { TopManagers } from "./TopManagers"
     import {
-    fetchActiveUsersStats, fetchDashboardData, fetchRecentActivities,
+    fetchActiveUsersStats, fetchDashboardData, fetchRecentActivities, fetchWorkflowChanges,
 } from "@/app/(admin)/actions";
     import {useEffect, useState} from "react";
 
@@ -19,22 +19,25 @@
         const [activeUsers, setActiveUsers] = useState<any>({ total: 0, change: 0 });
         const [pendingDocs, setPendingDocs] = useState({ total: 0, change: 0 });
         const [documentStatusData, setDocumentStatusData] = useState<{ name: string; value: number }[]>([]);
+        const [workflowChanges, setWorkflowChanges] = useState<any>({ total: 0, change: 0 });
 
 
 
         useEffect(() => {
             const fetchStats = async () => {
                 try {
+                    const data = await fetchDashboardData();
+                    const users = await fetchActiveUsersStats();
+                    const activities = await fetchRecentActivities();
+                    const workflowData = await fetchWorkflowChanges();
+                    console.log(workflowData);
 
-                const data  = await fetchDashboardData();
-                const users = await fetchActiveUsersStats();
-                const activities = await fetchRecentActivities();
-
-                setDocuments(data.total_documents);
-                setActiveUsers(users);
-                setPendingDocs(data.pending_documents);
-                setDocumentStatusData(data.status_distribution);
-                setRecentActivities(activities);
+                    setDocuments(data.total_documents);
+                    setActiveUsers(users);
+                    setPendingDocs(data.pending_documents);
+                    setDocumentStatusData(data.status_distribution);
+                    setRecentActivities(activities);
+                    setWorkflowChanges(workflowData);
                 } catch (error) {
                     console.error("Error fetching dashboard data:", error);
                 } finally {
@@ -43,6 +46,7 @@
             };
             fetchStats();
         }, []);
+
 
 
 
@@ -149,9 +153,15 @@
                                     </svg>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-2xl font-bold">145</div>
+                                    <div className="text-2xl font-bold">
+                                        {loading ? "Loading..." : workflowChanges.total}
+                                    </div>
                                     <p className="text-xs text-muted-foreground">
-                                        +10% from last week
+                                        {loading
+                                            ? ""
+                                            : workflowChanges.change > 0
+                                                ? `+${workflowChanges.change}% from last week`
+                                                : `${workflowChanges.change}% from last week`}
                                     </p>
                                 </CardContent>
                             </Card>

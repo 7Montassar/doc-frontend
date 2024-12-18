@@ -63,8 +63,8 @@ export default function UserTable({ initialUsers }: UserTableProps) {
   }
 
   return (
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
+      <div className="space-y-4 w-full">
+        <div className="flex justify-between items-center w-full">
           <ToastContainer />
           <Select onValueChange={(value) => setSelectedRole(value === 'all' ? null : value)}>
             <SelectTrigger className="w-[180px]">

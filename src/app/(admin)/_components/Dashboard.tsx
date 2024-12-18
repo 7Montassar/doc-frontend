@@ -53,11 +53,12 @@ export const Dashboard = () => {
                                     </section>
                                 )}
                                 {activeSection === 'users' && (
-                                    <section>
+                                    <section className="w-full h-full flex">
                                         {loading && <p>Loading users...</p>}
                                         {error && <p className="text-red-500">{error}</p>}
                                         {!loading && !error && users.length === 0 && <p>No users found.</p>}
-                                        {!loading && !error && users.length > 0 && <UserTable initialUsers={users} />} {/* Pass fetched users here */}
+                                        {!loading && !error && users.length > 0 &&
+                                            <UserTable initialUsers={users}/>} {/* Pass fetched users here */}
                                     </section>
                                 )}
                                 {activeSection === 'documents' && (
@@ -66,8 +67,7 @@ export const Dashboard = () => {
                                     </section>
                                 )}
                                 {activeSection === 'oldDocuments' && (
-                                    <section>
-                                        <h2 className="text-2xl font-semibold mb-6 text-[#0E708B]">Old Documents</h2>
+                                    <section className="w-full h-full flex">
                                         <OldDocumentsTable />
                                     </section>
                                 )}

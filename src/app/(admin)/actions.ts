@@ -1,15 +1,15 @@
 "use server";
-import { XMLParser } from "fast-xml-parser";
+import {XMLParser} from "fast-xml-parser";
 import {
     fetchAllUsersStatsEnvelope,
     fetchUserRoleDistributionEnvelope,
     getAllUsersEnvelope,
     toggleUserStatusEnvelope
 } from "@/soap/envelopes";
-import { getSession } from "@/lib/auth";
+import {getSession} from "@/lib/auth";
 import {User} from "@/types/user";
 import {revalidatePath} from "next/cache";
-import { revalidateTag} from "next/cache";
+import {revalidateTag} from "next/cache";
 
 export const getAllUsers = async () => {
     try {
@@ -35,7 +35,7 @@ export const getAllUsers = async () => {
         }
 
         const responseText = await response.text();
-        const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_", removeNSPrefix: true });
+        const parser = new XMLParser({ignoreAttributes: false, attributeNamePrefix: "@_", removeNSPrefix: true});
         const parsedXML = parser.parse(responseText);
 
         const users: User[] = [];
@@ -94,7 +94,6 @@ export const toggleUserStatus = async (userId: number): Promise<string> => {
 };
 
 
-
 export async function fetchUserRoleDistribution() {
     try {
         const token = await getSession();
@@ -144,11 +143,8 @@ export async function fetchUserRoleDistribution() {
 }
 
 
-
-
-
-export async function fetchActiveUsersStats(){
-    try{
+export async function fetchActiveUsersStats() {
+    try {
         const token = await getSession();
         const soapEnvelope = fetchAllUsersStatsEnvelope(token);
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/soap/`, {
@@ -180,15 +176,14 @@ export async function fetchActiveUsersStats(){
         const total = parseInt(result.total, 10) || 0;
         const change = parseFloat(result.change) || 0.0;
 
-        return { total, change };
+        return {total, change};
 
 
-    } catch (e){
+    } catch (e) {
         console.error(e)
-        return {total: 0, change:0}
+        return {total: 0, change: 0}
     }
 }
-
 
 
 export async function fetchDashboardData() {
@@ -210,8 +205,8 @@ export async function fetchDashboardData() {
     } catch (error) {
         console.error("Error fetching dashboard data:", error);
         return {
-            total_documents: { total: 0, change: 0 },
-            pending_documents: { total: 0, change: 0 },
+            total_documents: {total: 0, change: 0},
+            pending_documents: {total: 0, change: 0},
             status_distribution: [],
         };
     }
@@ -239,3 +234,53 @@ export async function fetchRecentActivities() {
         return [];
     }
 }
+
+export async function fetchTopManagers() {
+    try {
+        const token = await getSession();
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/document/get_top_managers`, {
+            method: "get",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch top managers.");
+        }
+
+        const data = await response.json();
+        return data.map((manager: any) => ({
+            name: manager.full_name,
+            documents: manager.document_count,
+        }));
+    } catch (error) {
+        console.error("Error in fetchTopManagers:", error);
+        throw error;
+    }
+}
+
+export async function fetchWorkflowChanges() {
+    try {
+        const token = await getSession();
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/workflows/get_dashboard_data/`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error fetching workflow changes: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error in fetchWorkflowChanges:", error);
+        throw error;
+    }
+}
+
