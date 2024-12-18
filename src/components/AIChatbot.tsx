@@ -1,33 +1,39 @@
-'use client'
+'use client';
 
-import { useState, useEffect, useRef } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { MessageCircle, Send, X, Mic, Copy, RotateCcw } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
-import VividBackground from './VividBackground'
+import { useState, useEffect, useRef } from 'react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { MessageCircle, Send, X, Mic, Copy, RotateCcw } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import VividBackground from './VividBackground';
+import { getAIResponse } from './actions';  // Import the function for AI response
 
 export default function AIChatbot() {
-    const [isOpen, setIsOpen] = useState(false)
-    const [input, setInput] = useState('')
-    const [messages, setMessages] = useState<{ role: 'user' | 'ai'; content: string }[]>([])
-    const [isListening, setIsListening] = useState(false)
-    const messagesEndRef = useRef<HTMLDivElement>(null)
+    const [isOpen, setIsOpen] = useState(false);
+    const [input, setInput] = useState('');
+    const [messages, setMessages] = useState<{ role: 'user' | 'ai'; content: string }[]>([]);
+    const [isListening, setIsListening] = useState(false);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }, [messages])
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
 
-    const handleSend = () => {
+    const handleSend = async () => {
         if (input.trim()) {
-            setMessages([...messages, { role: 'user', content: input }])
-            // Mock AI response
-            setTimeout(() => {
-                setMessages(prev => [...prev, { role: 'ai', content: `Here's a mock response to: "${input}"` }])
-            }, 1000)
-            setInput('')
+            setMessages([...messages, { role: 'user', content: input }]);
+
+            try {
+                const aiResponse = await getAIResponse(input); // Get the AI response based on user input
+                setMessages(prev => [...prev, { role: 'ai', content: aiResponse }]);  // Add AI response to the messages
+            } catch (error) {
+                console.error('Error:', error);
+                setMessages(prev => [...prev, { role: 'ai', content: "An error occurred." }]);
+            }
+
+            setInput('');
         }
-    }
+    };
 
     const handleVoiceInput = () => {
         if (!('webkitSpeechRecognition' in window)) {
@@ -56,15 +62,15 @@ export default function AIChatbot() {
             console.error('Speech recognition error', event);
             setIsListening(false);
         };
-    }
+    };
 
     const handleCopy = (content: string) => {
-        navigator.clipboard.writeText(content)
-    }
+        navigator.clipboard.writeText(content);
+    };
 
     const handleReset = () => {
-        setMessages([])
-    }
+        setMessages([]);
+    };
 
     return (
         <>
@@ -162,5 +168,5 @@ export default function AIChatbot() {
                 )}
             </AnimatePresence>
         </>
-    )
+    );
 }
