@@ -55,15 +55,21 @@ const Signup = () => {
         setIsLoading(true);
         try {
             await handleSignup(values);
-            toast.success("Account Created successfully!");
+            if (values.role === "manager") {
+                toast.success("Account Created successfully! please wait for approval");
+            }else{
+                toast.success("Account Created successfully!");
+            }
         } catch (e) {
             const errorMessage = e instanceof Error ? e.message : "An unknown error occurred.";
             toast.error(errorMessage);
-            setTimeout(() => {
-                redirect("/dashboard")
-            }, 2000);
+
         } finally {
             setIsLoading(false);
+
+                setTimeout(() => {
+                    redirect("/signin")
+                }, 2000);
         }
     }
 

@@ -6,6 +6,7 @@ import {setSession} from "@/lib/auth";
 
 export const handleSignup = async (values: z.infer<typeof formSchema>) => {
     try {
+
         const isManager = values.role === "manager";
         const soapEnvelope = `
             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:proj="project.user" xmlns:user="user.complexTypes">
@@ -53,8 +54,6 @@ export const handleSignup = async (values: z.infer<typeof formSchema>) => {
         const token = parsedXML["soap11env:Envelope"]?.["soap11env:Body"]?.["tns:register_userResponse"]?.["tns:register_userResult"];
         if (!token) throw new Error("Token not found in response.");
 
-
-        await setSession(token);
     } catch (e) {
         const errorMessage = e instanceof Error ? e.message : "An unknown error occurred.";
         throw new Error(errorMessage);
