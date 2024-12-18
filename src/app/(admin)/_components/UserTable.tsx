@@ -137,10 +137,6 @@ export default function UserTable({ initialUsers }: UserTableProps) {
                             <Pencil className="mr-2 h-4 w-4" />
                             Edit User
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-500">
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete User
-                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>

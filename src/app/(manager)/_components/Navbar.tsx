@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { clearSession } from '@/lib/auth'
 import { LogOut } from 'lucide-react'
+import { NotificationButton } from '@/app/(manager)/_components/NotificationButton'
 
 const Navbar = () => {
     return (
@@ -18,7 +19,8 @@ const Navbar = () => {
                             <NavLink href="/old_documents">Old Documents</NavLink>
                         </nav>
                     </div>
-                    <div>
+                    <div className="flex items-center space-x-4">
+                        <NotificationButton />
                         <Button
                             variant="ghost"
                             size="sm"
