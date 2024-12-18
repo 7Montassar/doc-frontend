@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import { Button } from './ui/button'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { clearSession } from '@/lib/auth'
 import { LogOut } from 'lucide-react'

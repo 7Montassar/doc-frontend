@@ -3,7 +3,7 @@ import  AvailableActions  from '../_components/AvailableActions'
 import  OldDocumentsTable  from '@/components/OldDocumentsTable'
 import UploadOldDoc from '../_components/UploadOldDoc'
 import DocumentTable from '@/components/DocumentTable'
-import Navbar from '@/components/Navbar'
+import Navbar from '@/app/(employee)/_components/Navbar'
 export const Dashboard= () => {
     return (
         <div className="container mx-auto px-4 py-8">

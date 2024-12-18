@@ -77,20 +77,6 @@ export default function UserTable({ initialUsers }: UserTableProps) {
               <SelectItem value="employee">Employee</SelectItem>
             </SelectContent>
           </Select>
-          <div className="space-x-2">
-            <Button onClick={() => handleAddUser('admin')} className="bg-[#0E708B] hover:bg-[#0c5f75]">
-              <UserPlus className="mr-2 h-4 w-4" />
-              Add Admin
-            </Button>
-            <Button onClick={() => handleAddUser('manager')} className="bg-[#0E708B] hover:bg-[#0c5f75]">
-              <UserPlus className="mr-2 h-4 w-4" />
-              Add Manager
-            </Button>
-            <Button onClick={() => handleAddUser('employee')} className="bg-[#0E708B] hover:bg-[#0c5f75]">
-              <UserPlus className="mr-2 h-4 w-4" />
-              Add Employee
-            </Button>
-          </div>
         </div>
         <div className="rounded-md border">
           <Table>

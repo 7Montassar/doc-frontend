@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import SubmittedDayOff from '../_components/submitted-day-off'
-import Navbar from '@/components/Navbar'
+import Navbar from '@/app/(employee)/_components/Navbar'
 
 export default function DayOffRequestForm() {
   const [startDate, setStartDate] = useState('')
@@ -35,7 +35,6 @@ export default function DayOffRequestForm() {
 
   return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-                    <Navbar />
 
         <div className="max-w-md w-full space-y-8 bg-white p-6 sm:p-8 rounded-xl shadow-md">
           <div>

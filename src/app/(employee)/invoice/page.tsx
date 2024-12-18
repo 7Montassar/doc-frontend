@@ -16,7 +16,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import Navbar from '@/components/Navbar'
 export default function InvoiceForm() {
   const [clientName, setClientName] = useState('')
   const [clientEmail, setClientEmail] = useState('')
@@ -48,8 +47,6 @@ export default function InvoiceForm() {
 
   return (
     <div className="container mx-auto p-4">
-                  <Navbar />
-
       <h1 className="text-3xl font-bold text-center mb-8 text-[#0E708B]">DocFlow Invoice Generator</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <Card>

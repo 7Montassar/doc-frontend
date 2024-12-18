@@ -1,16 +1,16 @@
 'use client'
 
-import { useState, useId, useEffect } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { Slider } from "@/components/ui/slider"
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
-import { Plus, Trash2, Move } from 'lucide-react'
+import { useState, useId, useEffect, ClassAttributes, HTMLAttributes, JSX, JSXElementConstructor, ReactElement, ReactNode, ReactPortal, Ref} from 'react'
+import {Button} from "@/components/ui/button"
+import {Input} from "@/components/ui/input"
+import {Label} from "@/components/ui/label"
+import {Textarea} from "@/components/ui/textarea"
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
+import {Switch} from "@/components/ui/switch"
+import {Slider} from "@/components/ui/slider"
+import {DragDropContext, Droppable, Draggable, DropResult} from 'react-beautiful-dnd'
+import {Plus, Trash2, Move} from 'lucide-react'
 import Preview from '../_components/doc-preview'
 import ColorPicker from '../_components/color-picker'
 import SubmittedCustomDocument from "@/app/(employee)/_components/submitted-custom-doc"
@@ -55,13 +55,14 @@ export default function CustomDocumentForm() {
     }
 
     const updateCustomField = (id: string, field: Partial<CustomField>) => {
-        setCustomFields(customFields.map(f => f.id === id ? { ...f, ...field } : f))
+        setCustomFields(customFields.map(f => f.id === id ? {...f, ...field} : f))
     }
 
     const removeCustomField = (id: string) => {
         setCustomFields(customFields.filter(f => f.id !== id))
     }
 
+    // @ts-ignore
     const onDragEnd = (result: DropResult) => {
         if (!result.destination) return
 
@@ -87,7 +88,8 @@ export default function CustomDocumentForm() {
 
     return (
         <div className={`container mx-auto p-4 ${theme === 'dark' ? 'dark bg-gray-900 text-white' : ''}`}>
-            <h1 className="text-3xl font-bold text-center mb-8" style={{ color: accentColor }}>Advanced Document Creator</h1>
+            <h1 className="text-3xl font-bold text-center mb-8" style={{color: accentColor}}>Advanced Document
+                Creator</h1>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <Card className={theme === 'dark' ? 'bg-gray-800 text-white' : ''}>
                     <CardHeader>
@@ -97,7 +99,7 @@ export default function CustomDocumentForm() {
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
                                 <Label htmlFor="title">Document Title</Label>
-                                <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+                                <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required/>
                             </div>
                             <div>
                                 <Label htmlFor="description">Description</Label>
@@ -112,11 +114,11 @@ export default function CustomDocumentForm() {
                                 <Label>Custom Fields</Label>
                                 <DragDropContext onDragEnd={onDragEnd}>
                                     <Droppable droppableId={`fields-${documentId}`}>
-                                        {(provided) => (
+                                        {(provided: { droppableProps: JSX.IntrinsicAttributes & ClassAttributes<HTMLDivElement> & HTMLAttributes<HTMLDivElement>; innerRef: Ref<HTMLDivElement> | undefined; placeholder: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined }) => (
                                             <div {...provided.droppableProps} ref={provided.innerRef}>
                                                 {customFields.map((field, index) => (
                                                     <Draggable key={field.id} draggableId={field.id} index={index}>
-                                                        {(provided) => (
+                                                        {(provided: { innerRef: Ref<HTMLDivElement> | undefined; draggableProps: JSX.IntrinsicAttributes & ClassAttributes<HTMLDivElement> & HTMLAttributes<HTMLDivElement>; dragHandleProps: JSX.IntrinsicAttributes & ClassAttributes<HTMLDivElement> & HTMLAttributes<HTMLDivElement> }) => (
                                                             <div
                                                                 ref={provided.innerRef}
                                                                 {...provided.draggableProps}

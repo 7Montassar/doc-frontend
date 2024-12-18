@@ -8,7 +8,8 @@ import DocumentTable from '@/components/DocumentTable'
 import {AdminDashboard} from '@/app/(admin)/_components/AdminDashboard'
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { getAllUsers} from "@/app/(admin)/actions";
-import {User} from "@/types/user"; // Make sure this is the correct import path for getAllUsers
+import {User} from "@/types/user";
+import AIChatbot from "@/components/AIChatbot"; // Make sure this is the correct import path for getAllUsers
 
 export const Dashboard = () => {
     const [activeSection, setActiveSection] = useState('stats')
@@ -38,6 +39,8 @@ export const Dashboard = () => {
 
     return (
         <SidebarProvider>
+            <AIChatbot />
+
             <div className="flex h-screen w-screen bg-gray-100">
                 <DashboardSidebar onSectionChange={handleSectionChange} activeSection={activeSection} />
                 <SidebarInset className="flex-1 overflow-hidden">
