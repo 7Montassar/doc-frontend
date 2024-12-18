@@ -3,10 +3,10 @@ import Link from 'next/link'
 
 export default function AvailableActions() {
     const actions = [
-        { name: 'Create Invoice', icon: FileText, href: '/create-invoice' },
-        { name: 'Create Day Off Request', icon: Calendar, href: '/create-day-off' },
-        { name: 'Create Report', icon: BarChart, href: '/create-report' },
-        { name: 'Create Other Document', icon: Plus, href: '/create-other' },
+        { name: 'Create Invoice', icon: FileText, href: '/invoice' },
+        { name: 'Create Day Off Request', icon: Calendar, href: '/day_off' },
+        { name: 'Create Report', icon: BarChart, href: '/report' },
+        { name: 'Create Other Document', icon: Plus, href: '/custom_doc' },
     ]
 
     return (

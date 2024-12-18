@@ -41,3 +41,33 @@ export const toggleUserStatusEnvelope = (userId: number, token: String) => {
 </soapenv:Envelope>
     `;
 };
+
+export const fetchAllUsersStatsEnvelope = (token: String) => {
+    return `
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:proj="project.user" xmlns:proj1="project.user.headers">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <proj:get_active_users_stats>
+         <proj:headers>
+            <proj1:authorization>${token}</proj1:authorization>
+         </proj:headers>
+      </proj:get_active_users_stats>
+   </soapenv:Body>
+</soapenv:Envelope>`;
+};
+
+export const fetchUserRoleDistributionEnvelope = (token: String) => {
+    return `
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:proj="project.user" xmlns:proj1="project.user.headers">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <proj:fetch_user_role_distribution>
+         <!--Optional:-->
+         <proj:headers>
+            <!--Optional:-->
+            <proj1:authorization>${token}</proj1:authorization>
+         </proj:headers>
+      </proj:fetch_user_role_distribution>
+   </soapenv:Body>
+</soapenv:Envelope>`
+}
