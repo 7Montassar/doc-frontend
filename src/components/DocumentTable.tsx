@@ -1,8 +1,8 @@
-'use client'
-import 'react-toastify/dist/ReactToastify.css';
-import React, { useEffect, useState } from 'react';
-import { ArrowUpRight, Search, Loader2 } from 'lucide-react';
-import { DocumentType } from '@/types/DocumentType';
+"use client";
+import "react-toastify/dist/ReactToastify.css";
+import React, { useEffect, useState } from "react";
+import { ArrowUpRight, Search, Loader2 } from "lucide-react";
+import { DocumentType } from "@/types/DocumentType";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,24 +19,26 @@ import {
   PaginationItem,
   PaginationLink,
   PaginationNext,
-  PaginationPrevious
+  PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { openDocument } from './actions';
+import { openDocument } from "./actions";
 import { getToken, getUserRole } from "@/app/dashboard/actions";
 import { toast, ToastContainer } from "react-toastify";
-import WorkflowPopup from './WorkflowPopup';
+import WorkflowPopup from "./WorkflowPopup";
 
 export default function DocumentTable() {
   const [documents, setDocuments] = useState<DocumentType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 10;
   const [userRole, setUserRole] = useState<string | null>(null);
   const [showWorkflow, setShowWorkflow] = useState<boolean>(false);
-  const [selectedDocumentId, setSelectedDocumentId] = useState<number | null>(null);
+  const [selectedDocumentId, setSelectedDocumentId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     async function fetchUserRole() {
@@ -44,7 +46,7 @@ export default function DocumentTable() {
         const role = await getUserRole();
         setUserRole(role);
       } catch (error) {
-        console.error('Error fetching user role:', error);
+        console.error("Error fetching user role:", error);
       }
     }
 
@@ -71,14 +73,17 @@ export default function DocumentTable() {
       }
       try {
         const token = await getToken();
-        console.log(token)
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/document/${url}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
+        console.log(token);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/document/${url}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`Failed to fetch documents: ${response.statusText}`);
@@ -114,19 +119,36 @@ export default function DocumentTable() {
       )
     );
   };
+  const handleOpenDocument = async (fileName: string) => {
+    try {
+      const blob = await openDocument(fileName);
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.target = "_blank"; // Open in a new tab
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error opening document:", error);
+    }
+  };
 
   const updateDocumentStatus = async (id: number) => {
     const documentToUpdate = documents.find((doc) => doc.id === id);
     if (!documentToUpdate) return;
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/document/${id}/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: documentToUpdate.status }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/document/${id}/`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: documentToUpdate.status }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Failed to update status for document ID: ${id}`);
@@ -139,10 +161,11 @@ export default function DocumentTable() {
     }
   };
 
-  const filteredDocuments = documents.filter(doc =>
-    doc.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    doc.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    doc.summary.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredDocuments = documents.filter(
+    (doc) =>
+      doc.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doc.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doc.summary.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const paginatedDocuments = filteredDocuments.slice(
@@ -218,14 +241,18 @@ export default function DocumentTable() {
                     </Button>
                   </TableCell>
                   <TableCell>{doc.category}</TableCell>
-                  <TableCell>{new Date(doc.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    {new Date(doc.createdAt).toLocaleDateString()}
+                  </TableCell>
                   <TableCell>{doc.summary}</TableCell>
                   <TableCell>
-                    {(userRole === "admin" || userRole === "manager") ? (
+                    {userRole === "admin" || userRole === "manager" ? (
                       <div className="flex items-center space-x-2">
                         <select
                           value={doc.status}
-                          onChange={(e) => handleStatusChange(doc.id, e.target.value)}
+                          onChange={(e) =>
+                            handleStatusChange(doc.id, e.target.value)
+                          }
                           className="border rounded px-2 py-1 text-sm"
                         >
                           <option value="pending">Pending</option>
@@ -249,7 +276,7 @@ export default function DocumentTable() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => openDocument(doc.fileName)}
+                      onClick={() => handleOpenDocument(doc.fileName)}
                     >
                       <ArrowUpRight className="h-4 w-4" />
                       <span className="sr-only">View</span>
@@ -280,7 +307,9 @@ export default function DocumentTable() {
             ))}
             <PaginationItem>
               <PaginationNext
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
                 disabled={currentPage === totalPages}
               />
             </PaginationItem>

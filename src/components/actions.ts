@@ -5,26 +5,25 @@ import { getSession } from "@/lib/auth";
 export async function openDocument(fileName: string) {
     try {
         const token = await getSession();
-        console.log(token)
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/document/get_document/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify({ file_name: fileName })
+            body: JSON.stringify({ file_name: fileName }),
         });
 
         if (!response.ok) {
             throw new Error('Network response was not okay');
         }
 
-                return await response.blob();
-                
-        } catch (error) {
-                throw ('Error: ' + (error as Error).message);
-        }
+        const pdf = await response.blob();
+        return pdf;
         
+    } catch (error) {
+        throw new Error('Error: ' + (error as Error).message);
+    }
 }
 export async function getAIResponse(command: string) {
     try {
